@@ -1,0 +1,13 @@
+$title-text: #ECECED;
+$sub-text: #DFDFDF;
+
+.container {
+  position: relative;
+  .content {
+    width: 100%;
+    padding: 0rem 0.5rem;
+    max-width: calc(100% - 1rem);
+    overflow: hidden;
+    color: $title-text;
+  }
+}

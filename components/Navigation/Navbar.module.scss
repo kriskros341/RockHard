@@ -1,0 +1,120 @@
+@import '../../styles/variables.scss';
+
+.contentWidth {
+  width: calc(100% - 4rem)
+}
+
+.Navbar__component {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  .Navbar__container {
+    margin-bottom: 0;
+    height: $navigation__height;
+    width: 100%;
+    background-color: $bg__menu;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    box-shadow: $box-shadow;
+    .MobileNavigationButtonContainer {
+      position: relative;
+      flex: 0 0 2.5rem;
+      top: -1.25rem;
+    }
+    .Navbar__content {
+      display: flex;
+      justify-content: space-between;
+      .Navbar__links {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+    }
+  }
+  .Navbar__container_active {
+    min-height: 16rem;
+    background-color: $bg__menu-darker;
+    display: flex;
+    flex-direction: column;
+    .Navbar__links__container {
+      margin: 1rem auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      li {
+        display: block;
+      }
+      .link {
+        background-color: $bg__menu;
+        border-radius: 4;
+      }
+    }
+  }
+}
+
+.additionalbutton__container {
+  width: calc(100% - 2rem);
+  display: flex;
+  justify-content: flex-end;
+}
+.CircleButton {
+  border-radius: 100%;
+  box-shadow: $box-shadow;
+  background-color: $bg__menu-darker;
+  max-width: 2.5rem;
+  min-height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 0;
+}
+
+.additionalItemsGroup {
+  position: fixed;
+  bottom: $navigation__height + 2rem;
+  right: 2rem;
+  min-width: 2.5rem;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+}
+
+.lines {
+  margin: 0.5rem auto 0 auto;
+  touch-action: none;
+}
+
+.link {
+  flex: 0 0 1.5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1.25rem;
+  .link__text {
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    color: #FAFAFA;
+  }
+}
+
+.ToggleCircleButton {
+  position: relative;
+  border-radius: 100%;
+  &::after {
+    position: absolute;
+    top: 1px; right: 1px; bottom: 1px; left: 1px;
+    background-color: $red;
+    border-radius: 100%;
+    z-index: -1;
+  }
+  &.active {
+    &::after {
+      transform: scale(1.2);
+      content: "";
+      
+    }
+  }
+}
