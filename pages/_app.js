@@ -18,7 +18,7 @@ const pageTransitionVariants = {
     scale: 1,
     transition: {
       duration: 0.3,
-      type: "tween"
+      type: "Interia"
     }
   },
   exit: {
@@ -26,28 +26,38 @@ const pageTransitionVariants = {
   }
 }
 
-function MyApp({ Component, pageProps }) {
+const Layout = ({title, children}) => {
   const router = useRouter()
-  console.log(router)
   return (
-    <>
-    <Head>
-      <style data-href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' />
-    </Head>
-
-    <div className={`${style.app__container}`}>
+    
       <AnimatePresence>
         <motion.div className={style.test} variants={pageTransitionVariants} initial="initial" animate="animate" exit="exit" key={router.pathname}>
           <h2 className={style.Page__title}>
-            {pageProps.pageTitle}
+            {title}
           </h2>
           <main className={style.app__content}>
-            <Component {...pageProps} />
+            {children}
           </main>
         </motion.div>
       </AnimatePresence>
-      <Navbar />
-    </div>
+      
+  )
+}
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <>
+      <Head>
+        <style data-href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet" />
+        <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css' rel='stylesheet' />
+      </Head>
+      <div className={`${style.app__container}`}>
+        <Layout title={pageProps.pageTitle ? pageProps.pageTitle : "Page"}>
+          <Component />
+        </Layout>
+        <Navbar additionalButtons={pageProps.additionalButtons}/>
+      </div>
     </>
   )
 }

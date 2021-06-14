@@ -5,6 +5,7 @@
 }
 
 .Navbar__component {
+  z-index: 100;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -19,8 +20,9 @@
     box-shadow: $box-shadow;
     .MobileNavigationButtonContainer {
       position: relative;
-      flex: 0 0 2.5rem;
+      flex: 0 0 $circleButton__size;
       top: -1.25rem;
+      left: -0.5rem; // ile tu ustawić??
     }
     .Navbar__content {
       display: flex;
@@ -33,7 +35,6 @@
     }
   }
   .Navbar__container_active {
-    min-height: 16rem;
     background-color: $bg__menu-darker;
     display: flex;
     flex-direction: column;
@@ -54,6 +55,7 @@
 }
 
 .additionalbutton__container {
+
   width: calc(100% - 2rem);
   display: flex;
   justify-content: flex-end;
@@ -62,8 +64,8 @@
   border-radius: 100%;
   box-shadow: $box-shadow;
   background-color: $bg__menu-darker;
-  max-width: 2.5rem;
-  min-height: 2.5rem;
+  max-width: $circleButton__size;
+  min-height: $circleButton__size;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,10 +74,11 @@
 }
 
 .additionalItemsGroup {
+  z-index: 100;
   position: fixed;
   bottom: $navigation__height + 2rem;
   right: 2rem;
-  min-width: 2.5rem;
+  min-width: $circleButton__size;
   display: flex;
   flex-direction: column-reverse;
   gap: 0.5rem;

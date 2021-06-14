@@ -1,0 +1,86 @@
+@import '../variables.scss';
+
+.Koncert__component {
+  background: rgba(33, 33, 33, 0.9);
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 1.5px rgba(98, 98, 98, 0.2);
+  border-radius: 4px;
+  margin-top: 1rem;
+  z-index: 1;
+  .Koncert__container {
+    margin: 0.5rem;
+    .Koncert__zespol {
+      font-family: Open Sans;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      color: #FAFAFA;
+    }
+    .Koncert__trasa {
+      font-family: Open Sans;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 22px;
+      color: #EEEEEE;
+    }
+    .Koncert__meta {
+      font-family: Roboto Condensed;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 16px;
+      color: #EEEEEE;
+      margin-top: 0.5rem;
+      .decoration {
+        position: relative;
+        top: 2px;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
+.Map__component {
+  overflow: hidden;
+  max-width: 100%;
+  height: 400px;
+  z-index: 0;
+}
+.Map__marker {
+  color: #FAFAFA;
+  background-color: #212121;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 100%;
+  border: 4px solid $red;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.Map__cluster {
+  display: flex;
+  max-width: $mapMarkerSize * 2;
+  flex-wrap: wrap;
+  justify-content: center;
+  .cluster__inner {
+    overflow: hidden;
+    width: 52px;
+    height: 52px;
+    background-color: #212121;
+    border-radius: 100%;
+    border: 3px solid $red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:nth-child(3) {
+      position: relative;
+      top: -0.5rem;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 export const CircleButtonVariants = {
-  animate: {opacity: 1, scale: 1} ,
-  exit: {opacity: 0.7, scale: 0.2},
+  show: {opacity: 1, scale: 1} ,
+  hidden: {opacity: 0.7, scale: 0.2},
 }
 
 export const hbgrVariants = {
@@ -15,7 +15,7 @@ export const NavItemsVariants = {
 
 export const ActiveMenuVariants = {
   initial: {
-    y: 260, 
+    y: "50vh", 
     opacity: 0.5,
     transition: {duration: 0.3, type: "tween"}
   },

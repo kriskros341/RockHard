@@ -1,19 +1,26 @@
-import style from '../styles/Blog/Blog.module.scss'
 
+import KoncertyComponent from '../components/Koncerty/Koncerty'
 export async function getStaticProps(context) {
   return {
     props: {
-      pageTitle: "Koncerty"
-    },
+      pageTitle: "Koncerty",
+      additionalButtons: [
+        {
+          to: {
+            pathname: "/koncerty",
+            query: {showMap: 'true'},
+          },
+          text: "Co Nowego",
+          icon: '/static/MapIcon.png',
+          toggle: true
+        },
+      ]
+    }
   }
 }
 
-export default function Koncerty() {
-  return (
-    <div className={style.Blog__component}>
-      <div className={style.Blog__container}>
-        ddd
-      </div>
-    </div>
-  )
+const Koncerty = () => {
+  return <KoncertyComponent />
 }
+
+export default Koncerty

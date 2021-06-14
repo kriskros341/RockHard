@@ -2,6 +2,7 @@
 
 .app__container {
   position: relative;
+  width: 100%;
 }
 .app__content {
   min-height: 140vh;
@@ -14,6 +15,9 @@
   font-size: 34px;
 }
 .test {
+  max-width: 100%;
+  width: 100%;
+  min-height: 100%;
   background-color: $bg;
-  position: absolute;
+  position: static;
 }
