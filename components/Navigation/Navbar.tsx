@@ -8,7 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { hbgrVariants, NavItemsVariants, ActiveMenuVariants } from './navbarVariants'
 import useTapGesture from './useTapGesture'
 import router, { useRouter } from 'next/router'
-import ExtendedNavigation from './ExtendedNavigation'
 import { urlObjectModel } from '../pagePropsType'
 import useToggleQuery from './useToggleQuery'
 
@@ -95,7 +94,7 @@ const BasicNavigation: React.FC<{closeNavigation: () => void, extendNavigation: 
   const [ currentMotionValue, updateMotionValue, restartMotionValue ] = 
     useTapGesture(height, shouldBecomeInactive)
   return (
-    <motion.div animate={{height: currentMotionValue}} className={style.Navbar__container_active}>
+    <motion.div layoutId="MenuId" animate={{height: currentMotionValue}} className={style.Navbar__container_active}>
       <motion.div whileTap={{scale: 0.9}} onPan={updateMotionValue} onPanEnd={panEndHandler} className={style.lines}>
         <LinesSvg/>
       </motion.div>
@@ -113,14 +112,6 @@ const BasicNavigation: React.FC<{closeNavigation: () => void, extendNavigation: 
       </nav>
     </motion.div>
   )
-}
-
-const NavbarActive: React.FC<{closeNavigation: () => void}> = ({closeNavigation}) => {
-  const [ isExtended, setExtended ] = useState<boolean>(false)
-  if (isExtended) {
-    return <ExtendedNavigation />
-  }
-  return <BasicNavigation closeNavigation={closeNavigation} extendNavigation={() => setExtended(true)}/>
 }
 
 const NavbarContent = ({isActive, toggleNavigation}) => {
@@ -147,14 +138,14 @@ const NavbarContent = ({isActive, toggleNavigation}) => {
 const Navbar = ({additionalButtons}) => {
   const [ isActive, setActive ] = useState<boolean>(false)
   const toggleNavigation = () => setActive(v => !v)
-
+  const goHome = () => {router.replace('/'); setActive(false)}
   return (
     <>
       <div className={style.Navbar__component}>
         <AnimatePresence>
           {isActive &&
             <motion.div variants={ActiveMenuVariants} initial="initial" animate="animate" exit="initial" transition={{type: "Inertia", duration: 0.3}}>
-              <NavbarActive closeNavigation={() => setActive(false)} />
+              <BasicNavigation closeNavigation={() => setActive(false)} extendNavigation={goHome}/>
             </motion.div>
           }
         </AnimatePresence>

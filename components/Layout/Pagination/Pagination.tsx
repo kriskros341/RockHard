@@ -1,13 +1,12 @@
 import React, { useRef } from 'react'
-import globalStyle from '../../styles/Page.module.scss'
-import { useStatePagination, useRouterPagination } from './usePagination'
-
-export interface PaginationControlsInterface {
-  pageNumber: number,
-  maxPageNumber: number,
-  onNext?: () => void
-  onPrevious?: () => void
-}
+import globalStyle from '@/Styles/Page.module.scss'
+import { useRouterPagination, useStatePagination } from './usePagination'
+import { 
+  PaginationInterface, 
+  paginationTypesModel, 
+  PaginationControlsInterface 
+} from './PaginationTypes'
+import { renderChildArrayIfIndex } from '../../someFunctions'
 
 export const DefaultPaginationControls: React.FC<PaginationControlsInterface> = ({pageNumber, maxPageNumber, onNext, onPrevious}) => {
   /* 
@@ -39,15 +38,7 @@ export const DefaultPaginationControls: React.FC<PaginationControlsInterface> = 
   )
 }
 
-
-interface PaginationInterface<CustomControls> {
-  itemsPerPage: number, 
-  className?: string, 
-  isStatePagination?: boolean
-  CustomControls?: React.FC<CustomControls & PaginationControlsInterface>
-}
-
-export const Pagination: React.FC<PaginationInterface<{}>> = ({children, itemsPerPage, className, isStatePagination, CustomControls}) => {
+export const Pagination: React.FC<PaginationInterface> = ({children, itemsPerPage, className, usePagination, CustomControls}) => {
   /* 
     Pagination component is used to limit the amount of data presented at once.
     It accepts (Element | Component)[] as Children with specified key attribute.
@@ -56,10 +47,9 @@ export const Pagination: React.FC<PaginationInterface<{}>> = ({children, itemsPe
     :?isStatePagination determines whether pagination should take place within page state. 
       This way you avoid having lot's of history entries of essentially the same page.
       You lose the ability to router.back() to last seen page though...
-      
   */
   const childrenCount = React.Children.count(children)
-  const { currentPageNumber, paginationControls, isOnCurrentPage } = isStatePagination ? useStatePagination(childrenCount, itemsPerPage) : useRouterPagination(childrenCount, itemsPerPage)
+  const { currentPageNumber, paginationControls, isOnCurrentPage } = usePagination(childrenCount, itemsPerPage)
   const paginationRef = useRef(null)
   const scrollBackAnd = (callback: () => void) => {
     paginationRef.current.scrollTo(0, 0)
@@ -68,10 +58,7 @@ export const Pagination: React.FC<PaginationInterface<{}>> = ({children, itemsPe
   const shouldRenderControls: boolean = childrenCount > itemsPerPage
   return (
     <div ref={paginationRef} className={`${className} ${globalStyle.Pagination__Component}`}>
-      {React.Children.map(children, (Item, index) => 
-        isOnCurrentPage(index) &&
-          React.createElement('div', [], Item)
-      )}
+      {renderChildArrayIfIndex(children, isOnCurrentPage)}
       {shouldRenderControls && (CustomControls ? 
         <CustomControls 
           pageNumber={currentPageNumber} 
@@ -89,6 +76,14 @@ export const Pagination: React.FC<PaginationInterface<{}>> = ({children, itemsPe
       )}
       </div>
   )
+}
+
+export const StatePagination: React.FC<PaginationInterface> = (props) => {
+  return <Pagination {...props} usePagination={useStatePagination} />
+}
+
+export const RouterPagination: React.FC<PaginationInterface> = (props) => {
+  return <Pagination {...props} usePagination={useStatePagination} />
 }
 
 export default Pagination

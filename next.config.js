@@ -5,7 +5,4 @@ module.exports = {
         presets: ["next/babel"]
     }
   },
-  alias: {
-    react: path.resolve('./node_modules/react')
-  }
 }

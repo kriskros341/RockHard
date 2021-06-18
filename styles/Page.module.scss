@@ -25,6 +25,7 @@
 .Pagination__Component {
   position: relative;
     .Pagination__ControlsContainer {
+      z-index: 100;
       position: absolute;
       bottom: -6rem; left: 0;
       height: 14rem;
@@ -37,6 +38,26 @@
       .Pagination__ControlsContent {
         display: flex;
         flex-direction: row;
+    }
+  }
+}
+
+.ContentCutter__component {
+  position: relative;
+  .ContentCutter__ControlsContainer {
+    z-index: 100;
+    position: absolute;
+    bottom: -6rem; left: 0;
+    height: 14rem;
+    width: 100%;
+    background: linear-gradient(0deg, #212121 27.62%, rgba(0, 0, 0, 0) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .ContentCutter__Controls {
+      display: flex;
+      flex-direction: row;
     }
   }
 }

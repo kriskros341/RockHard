@@ -1,19 +1,7 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { isNumeric } from '../someFunctions'
-
-type paginationUtilitiesModel = {
-  currentPageNumber: number
-  paginationControls: {
-    nextPage: () => void
-    previousPage: () => void
-  }
-  isOnCurrentPage: (itemIndex: number) => boolean
-}
-
-interface usePaginationInterface {
-  (itemCount: number, itemsPerPage: number): paginationUtilitiesModel
-}
+import { isNumeric, bindIsBetweenFunction } from '../../someFunctions'
+import { usePaginationInterface } from './PaginationTypes'
 
 export const useStatePagination: usePaginationInterface = (itemCount, itemsPerPage) => {
   /* 
@@ -39,22 +27,20 @@ export const useStatePagination: usePaginationInterface = (itemCount, itemsPerPa
   return {currentPageNumber, paginationControls, isOnCurrentPage}
 }
 
-export const useRouterPagination: usePaginationInterface = (itemCount:number, itemsPerPage:number) => {
+export const useRouterPagination: usePaginationInterface = (itemCount, itemsPerPage) => {
   /* 
     creates pagination utilities based on router.query. 
     :param itemCount count of wrapped items
     :param itemsPerPage Determines how many items will be displayed per page
     uses the same interface as useStatePagination
   */
-
-
   const router = useRouter()
   const getCurrentPageNumber = () => {
     const currentPageString = 
-      router.query.page ? router.query.page : "1"
+      router.query.page ? router.query.page : "0"
     const givenPageNumber = 
       typeof currentPageString == 'object' ? currentPageString[0] : currentPageString
-    const currentPageNumber = isNumeric(givenPageNumber) ? parseInt(givenPageNumber) : 1
+    const currentPageNumber = isNumeric(givenPageNumber) ? parseInt(givenPageNumber) : 0
     return currentPageNumber
   }
   const currentPageNumber = getCurrentPageNumber()
@@ -72,9 +58,7 @@ export const useRouterPagination: usePaginationInterface = (itemCount:number, it
   }
   const firstVisibleIndex = Math.max(0 + currentPageNumber * itemsPerPage, 0)
   const lastVisibleIndex = Math.min(itemsPerPage + currentPageNumber * itemsPerPage, itemCount)
-  const isOnCurrentPage = (itemIndex: number) => {
-    return itemIndex >= firstVisibleIndex && itemIndex < lastVisibleIndex
-  }
+  const isOnCurrentPage = bindIsBetweenFunction(firstVisibleIndex, lastVisibleIndex)
   return {currentPageNumber, paginationControls, isOnCurrentPage}
 }
 

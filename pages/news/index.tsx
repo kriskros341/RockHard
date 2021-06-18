@@ -6,7 +6,8 @@ import style from '../../styles/Newsy/Newsy.module.scss'
 import globalStyle from '../../styles/app.module.scss'
 import { staticPropsModel } from '../../components/pagePropsType'
 import PageLayout, { PageTitle } from '../../components/Layout/PageLayout'
-import Pagination from '../../components/Layout/Pagination'
+import AutoExpandingFeed from '../../components/Layout/Feed/AutoExpandingFeed'
+
 
 export async function getStaticProps(context): Promise<staticPropsModel> {
   return {
@@ -35,9 +36,9 @@ export const createFakeData = (i: number): newsDataModel => {
   }
 }
 
-export const createFakeDataArray = () => {
+export const createFakeDataArray = (count: number) => {
   let kon: newsDataModel[] = []
-  for(var i = 0; i < 10; i++) {
+  for(var i = 0; i < count; i++) {
     kon.push(createFakeData(i))
   }
   return kon
@@ -46,7 +47,6 @@ export const createFakeDataArray = () => {
 interface NewsInterface extends newsDataModel {
   news_id: number
 }
-
 
 const News: React.FC<NewsInterface> = ({title, tags, image, date, news_id}) =>
   <Link href={`/news/${news_id}`}>
@@ -77,15 +77,15 @@ const News: React.FC<NewsInterface> = ({title, tags, image, date, news_id}) =>
 const Newsy = () => {
   const [ newsData, setNewsData ] = useState<newsDataModel[]>([])
   useEffect(() => {
-    setNewsData(createFakeDataArray())
+    setNewsData(createFakeDataArray(50))
   }, [])
   return (
     <PageLayout titleComponent={<PageTitle>Newsy</PageTitle>}>
-      <Pagination itemsPerPage={9}>
+      <AutoExpandingFeed initiallyVisible={9} incrementBy={8}>
         {newsData && newsData.map((item, index) =>
           <News key={`newsData__${index}`} news_id={index} {...item}/>
         )}
-      </Pagination>
+      </AutoExpandingFeed>
     </PageLayout>
   )
 }

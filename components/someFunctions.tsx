@@ -1,3 +1,6 @@
+import React from 'react'
+
+
 export const areAllTrue = (arrayOfBooleans: boolean[]): boolean => {
   if(arrayOfBooleans.length == 0) return false
   for(let value of arrayOfBooleans) {
@@ -32,4 +35,19 @@ export const deepComparison = (o1: any, o2: any, excuseTypeDifferences: boolean 
   if(subObjects.length != 0)
     return areAllTrue(subObjects)
   return true
+}
+
+export const bindIsBetweenFunction = (lowerEnd: number, higherEnd: number) => {
+  return (value: number): boolean => (value >= lowerEnd && value < higherEnd)
+}
+
+export const renderChildArrayIfIndex = (children: React.ReactNode, fn: (value: number) => boolean): JSX.Element => {
+  return (
+    <>
+      {React.Children.map(children, (Item, index) => 
+        fn(index) &&
+          React.createElement(React.Fragment, {key: `renderedConditionally__${index}`}, Item)
+      )}
+    </>
+  )
 }

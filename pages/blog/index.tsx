@@ -1,9 +1,10 @@
-import style from '../../styles/Blog/Blog.module.scss'
+import style from '@/Styles/Blog/Blog.module.scss'
 import Image from 'next/image'
 import { useInView } from 'react-intersection-observer'
 import { staticPropsModel } from '../../components/pagePropsType'
-import globalStyle from '../../styles/app.module.scss'
+import globalStyle from '@/Styles/app.module.scss'
 import PageLayout, { PageTitle } from '../../components/Layout/PageLayout'
+import { RouterPagination } from '@/Components/Layout/Pagination/Pagination'
 
 export async function getStaticProps(context): Promise<staticPropsModel> {
   return {
@@ -105,12 +106,15 @@ const Post: React.FC<PostModel> = ({title, tags, image, date, item_id}) => {
   )
 }
 
+
 const Blog = () => {
   return (
     <PageLayout titleComponent={<PageTitle>Koncerty</PageTitle>}>
-      {Posts.map((item, index) => 
-        <Post key={`BlogPost__${index}`} item_id={index} {...item} />
-      )}
+      <RouterPagination itemsPerPage={3}>
+        {Posts.map((item, index) => 
+          <Post key={`BlogPost__${index}`} item_id={index} {...item} />
+        )}
+      </RouterPagination>
     </PageLayout>
   )
 }
