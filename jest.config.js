@@ -1,15 +1,9 @@
-const config = {
-  verbose: true,
-};
-
-
 module.exports = {
   preset: 'ts-jest',
-  collectCoverageFrom: [
-    '*/tests/*{.tsx}',
-    '*/**/tests/*{.tsx}'
-  ],
+  testEnvironment: 'node',
   transform: {
-
+    "^.+\\.jsx?$": "babel-jest",
+    '^.+\\.tsx?$': 'ts-jest',
   }
-}
+  
+};

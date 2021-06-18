@@ -10,9 +10,16 @@ export type additionalButtonModel = {
   toggle?: boolean
 }
 
+type articleTypeModel = 'article' | 'page' 
+
+type pageTitleModel = {
+  title: string
+  type: articleTypeModel
+}
+
 export type staticPropsModel = {
   props: {
-    pageTitle: string,
-    additionalButtons: additionalButtonModel[]
+    pageTitle: pageTitleModel
+    additionalButtons?: additionalButtonModel[]
   }
 }

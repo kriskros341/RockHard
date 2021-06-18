@@ -1,15 +1,16 @@
 import style from './Navbar.module.scss'
+import globalStyle from '../../styles/app.module.scss'
 import Link from 'next/link'
 import {navlinks, MobileNavigationButtonSvg, MobileCancelButtonSvg, LinesSvg, CogIconSvg} from './NavLinks'
 import Image from 'next/image'
-import { useState, memo, useCallback, useEffect, useReducer, useMemo } from 'react'
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CircleButtonVariants, hbgrVariants, NavItemsVariants, ActiveMenuVariants } from './navbarVariants'
+import { hbgrVariants, NavItemsVariants, ActiveMenuVariants } from './navbarVariants'
 import useTapGesture from './useTapGesture'
 import router, { useRouter } from 'next/router'
 import ExtendedNavigation from './ExtendedNavigation'
 import { urlObjectModel } from '../pagePropsType'
-import { deepComparison } from '../someFunctions'
+import useToggleQuery from './useToggleQuery'
 
 export const CircleButton: React.FC<{label: string, callback?: () => void}> = ({label, children, callback}) => {
   return (
@@ -28,51 +29,11 @@ export const CircleButton: React.FC<{label: string, callback?: () => void}> = ({
   )
 }
 
-const path1 = {
-  pathname: "/koncerty",
-  query: {
-    showMap: "true"
-  }
-}
-const path2 = {
-  pathname: "/koncerty",
-  query: {
-    showMap: true
-  }
-}
-
-const useToggleQuery = (to: urlObjectModel): [boolean, () => void] => {
-  const router = useRouter()
-  const currentRoute = {
-    pathname: router.pathname,
-    query: router.query
-  } as urlObjectModel
-  const [ isActive, setActive ] = useState<boolean>(currentRoute == to)
-  useEffect(() => {
-    setActive(currentRoute == to)
-  }, [router.asPath])
-  const handleToggle = useCallback(() => {
-    const getBaseUrl = () => {
-      const baseUrl = router.asPath.split('?')[0]
-      return baseUrl
-    }
-    console.log(currentRoute.query, to.query)
-    console.log(deepComparison(currentRoute.query, to.query))
-    if(deepComparison(currentRoute, to)) {
-      router.replace(getBaseUrl())
-    } else {
-      router.replace(to) 
-    }
-  }, [router.asPath])
-  return [ isActive, handleToggle ]
-}
-
 interface ToggleCircleButtonInterface {
   to?: urlObjectModel
 }
 
 const ToggleCircleButton: React.FC<ToggleCircleButtonInterface> = ({to, children}) => {
-  const router = useRouter()
   const [ isActive, handleToggle ] = useToggleQuery(to ? to : {pathname: '/'})
   return (
     <div 
@@ -96,7 +57,12 @@ export const NavbarLink: React.FC<{to: string}> = ({to, children}) => {
   )
 }
 
-const MobileHamburger: React.FC<{isNavigationActive: boolean, toggleNavigation: () => void}> = ({isNavigationActive, toggleNavigation}) => {
+interface MobileHamburgerInterface {
+  isNavigationActive: boolean
+  toggleNavigation: () => void
+}
+
+const MobileHamburger: React.FC<MobileHamburgerInterface> = ({isNavigationActive, toggleNavigation}) => {
   return (
     <div onClick={() => toggleNavigation()} className={style.MobileNavigationButtonContainer}>
       <CircleButton label="Mobile Navigation Button">
@@ -149,7 +115,6 @@ const BasicNavigation: React.FC<{closeNavigation: () => void, extendNavigation: 
   )
 }
 
-
 const NavbarActive: React.FC<{closeNavigation: () => void}> = ({closeNavigation}) => {
   const [ isExtended, setExtended ] = useState<boolean>(false)
   if (isExtended) {
@@ -160,7 +125,7 @@ const NavbarActive: React.FC<{closeNavigation: () => void}> = ({closeNavigation}
 
 const NavbarContent = ({isActive, toggleNavigation}) => {
   return (
-    <div className={style.Navbar__container}>
+    <div className={`${style.Navbar__container}`}>
       <nav className={`${style.Navbar__content} ${style.contentWidth}`}>
         <MobileHamburger isNavigationActive={isActive} toggleNavigation={toggleNavigation}/>
         <AnimatePresence>
@@ -201,7 +166,7 @@ const Navbar = ({additionalButtons}) => {
             <CogIconSvg />
           </ToggleCircleButton>
         : 
-          additionalButtons?.map(({to, text, icon, toggle}, index) =>
+          additionalButtons?.map(({to, text, icon, toggle}, index: number) =>
             toggle ? 
               <ToggleCircleButton key={`navToggle_${index}`} to={to}>
                 <Image src={icon} height="24" width="24" alt={text}/>

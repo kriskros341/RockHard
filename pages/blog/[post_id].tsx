@@ -1,6 +1,7 @@
-import { useRouter } from "next/router"
+import { useRouter, withRouter } from "next/router"
 import { Posts } from './index'
 import { staticPropsModel } from '../../components/pagePropsType'
+import appStyle from '../../styles/app.module.scss'
 
 export async function getStaticPaths() {
   let paths = []
@@ -12,13 +13,11 @@ export async function getStaticPaths() {
     fallback: true
   }
 }
-
 export async function getStaticProps(context: any): Promise<staticPropsModel> {
   const date = Posts[context.params.post_id].date
-  const pageTitle = `Post z dnia ${date.toLocaleDateString()}`
   return {
     props: {
-      pageTitle: pageTitle,
+      pageTitle: {title: `Post z dnia ${date.toLocaleDateString()}`, type: 'page'},
       additionalButtons: [
         {
           to: {pathname: "/blog"},
@@ -30,12 +29,11 @@ export async function getStaticProps(context: any): Promise<staticPropsModel> {
   }
 }
 
-const BlogPost = () => {
-  const router = useRouter()
+const BlogPost = ({router}) => {
   const { post_id } = router.query
   return (
-    <div>{ post_id }</div>
+    <div>{ Posts[post_id] && Posts[post_id].title }</div>
   )
 }
 
-export default BlogPost
+export default withRouter(BlogPost)

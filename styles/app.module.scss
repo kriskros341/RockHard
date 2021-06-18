@@ -7,17 +7,18 @@
 .app__content {
   min-height: 140vh;
 }
-.Page__title {
-  margin: 0.5rem 1.25rem;
-  font-family: Open Sans;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 34px;
-}
+
 .test {
   max-width: 100%;
   width: 100%;
   min-height: 100%;
   background-color: $bg;
   position: static;
+}
+
+.borderAndShadow {
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 1.5px rgba(98, 98, 98, 0.2);
+  border-radius: 4px;
 }

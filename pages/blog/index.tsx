@@ -1,15 +1,14 @@
 import style from '../../styles/Blog/Blog.module.scss'
-import pageStyle from '../../styles/Page.module.scss'
 import Image from 'next/image'
 import { useInView } from 'react-intersection-observer'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
 import { staticPropsModel } from '../../components/pagePropsType'
+import globalStyle from '../../styles/app.module.scss'
+import PageLayout, { PageTitle } from '../../components/Layout/PageLayout'
 
 export async function getStaticProps(context): Promise<staticPropsModel> {
   return {
     props: {
-      pageTitle: "Posty",
+      pageTitle: {title: `Posty`, type: 'page'},
       additionalButtons: [
         {
           to: {
@@ -62,13 +61,15 @@ type PostModel = {
   tags: string[]
   image: string
   date: Date
+  item_id: number
 }
+
 
 const PostImage = ({image, isViewed}) => {
   return (
     <div className={`${style.Post__image} ${isViewed && style.active}`}>
         <Image
-      width="320"
+          width="320"
           src={image}
           height="320"
           >
@@ -78,39 +79,41 @@ const PostImage = ({image, isViewed}) => {
   )
 }
 
-const Post: React.FC<PostModel> = ({title, tags, image, date}) => {
+const PostBody = ({title, tags}) => 
+  <article className={`${style.Post__body} ${globalStyle.borderAndShadow}`}>
+    <div className={style.Post__title}>
+      {title}
+    </div>
+    <div className={style.Post__meta}>
+      {tags.join(", ")}
+    </div>
+  </article>
+
+
+const Post: React.FC<PostModel> = ({title, tags, image, date, item_id}) => {
   const [observerRef, observerInView, ObserverEntry] = useInView({threshold: 0.8});
   console.log(observerInView, ObserverEntry)
   return (
     <div ref={observerRef} className={style.Post__component}>
-      <div className={style.Post__container}>
-        <PostImage image={image} isViewed={observerInView} /> 
-        <div className={style.Post__body}>
-          <div className={style.Post__title}>
-            {title}
-          </div>
-          <div className={style.Post__meta}>
-            {tags.join(", ")}
-          </div>
+      <a href={`/blog/${item_id}`}>
+        <div className={style.Post__container}>
+          <PostImage image={image} isViewed={observerInView} /> 
+          <PostBody title={`${title}_${item_id}`} tags={tags} />
         </div>
-      </div>  
+      </a>
     </div>
   )
 }
 
 const Blog = () => {
-  console.log("jd")
   return (
-    <div className={pageStyle.Page__component}>
-      <div className={pageStyle.Page__container}>
-        {Posts.map((item, index) => 
-          <a href={`/blog/${index}`}>
-            <Post key={`BlogPost__${index}`} {...item} />
-          </a>
-        )}
-      </div>
-    </div>
+    <PageLayout titleComponent={<PageTitle>Koncerty</PageTitle>}>
+      {Posts.map((item, index) => 
+        <Post key={`BlogPost__${index}`} item_id={index} {...item} />
+      )}
+    </PageLayout>
   )
 }
+
 
 export default Blog

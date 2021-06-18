@@ -6,6 +6,10 @@ export const areAllTrue = (arrayOfBooleans: boolean[]): boolean => {
   return true
 }
 
+export const isNumeric = (value: any): boolean => {
+  return !isNaN(parseFloat(value)) && isFinite(value)
+}
+
 export const deepComparison = (o1: any, o2: any, excuseTypeDifferences: boolean = false): boolean => {
   /* It's messy but I did it on my own ^^ */
   if(excuseTypeDifferences) {

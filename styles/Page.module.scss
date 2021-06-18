@@ -1,7 +1,42 @@
 .Page__component {
-  margin: 2rem 1.25rem 20vh 1.5rem;
+  margin: 1.5rem 1.25rem 20vh 1.5rem;
+  .Page__title {
+    margin: 1.25rem 0rem;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 34px;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+  }
+  .Page__articleTitle {
+    margin: 1.25rem 0rem;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+  }
   .Page__container {
     margin: 0 auto;
     max-width: calc(600px + 2rem);
+  }
+}
+
+.Pagination__Component {
+  position: relative;
+    .Pagination__ControlsContainer {
+      position: absolute;
+      bottom: -6rem; left: 0;
+      height: 14rem;
+      width: 100%;
+      background: linear-gradient(0deg, #212121 27.62%, rgba(0, 0, 0, 0) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .Pagination__ControlsContent {
+        display: flex;
+        flex-direction: row;
+    }
   }
 }
