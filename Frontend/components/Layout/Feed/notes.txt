@@ -1,0 +1,34 @@
+
+
+  IncrementalFetcher:
+    data: useSwr
+    error: useSwr
+    api should specify 
+    offset & count in query
+      Component will wrap content cutter
+      if it doesn't then entire content can be prefetched
+
+      how do I specify endpoint?
+        with simple {string} regex schema, like
+          http://somePage.lol/:count:/:offset:
+          http://somePage.lol?count=:count:&offset=:offset:
+          Select between : and : 
+          
+          https://somePage.lol:2137?count=:count:&offset=:offset: // How do I deal with that?
+
+          Web url api to exclude pathname
+
+
+      how do I know if there aren't more records in database? 
+        if lastest fetch is empty => No more data avaliable
+      
+      What if something goes wrong?
+        SWRerror => Something went wrong (Server Was Rude)
+
+      What exactly are children of this component??!
+        The children are specified by higher component
+          How do I do that
+            The child schema is passed as {(props) => <ChildComponentSchema ...props ...additionalInfo />}
+      
+  the result is either count of slashes from left or query key
+    pathnamePositionModel | queryKeyModel
