@@ -1,12 +1,12 @@
 import ContentCutter from "./ContentCutterFeed"
 import { AutomaticFeedInterface, ContentCutterInterface, ObserverControlsInterface } from './FeedTypes'
 import { useInView } from 'react-intersection-observer'
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import globalStyle from '@/Styles/Page.module.scss'
 import { useSWRInfinite } from 'swr'
 
 const ObserverControls: React.FC<ObserverControlsInterface> = ({expandRange, isFullyVisible, onFinishCallback}) => {
-  const { ref, inView, entry } = useInView({delay: 50})
+  const { ref, inView } = useInView({delay: 50})
   useEffect(() => {
     inView && onFinishCallback && onFinishCallback()
   }, [inView])
@@ -15,6 +15,10 @@ const ObserverControls: React.FC<ObserverControlsInterface> = ({expandRange, isF
       sadsad
     </div>
   )
+}
+
+const LoadingIndicator: React.FC<{isLoading: boolean}> = (isLoading) => {
+  return <div>{isLoading ? "loading" : ""}</div>
 }
 
 type PathnamePositionModel = number
@@ -29,14 +33,14 @@ const searchPathnameForPattern = (pathname: string, pattern: string): PathnamePo
 
 type QueryKeyModel = string
 const searchQueryForPattern = (query: string, pattern: string): QueryKeyModel | null => {
-  const getKeyFromSchemaQuery = (searchedSegment: string) =>
-    searchedSegment.slice(1, searchedSegment.indexOf("="))
+  const getKeyFromSchemaQuery = (searchedSegment: string) => {
+    const result = searchedSegment.slice(1, searchedSegment.indexOf("="))
+    return result ? result : null
+  }
   const re = new RegExp(`([&?][a-zA-Z_0-9]*=${pattern})`)
   const searchQueryForPattern = query.match(re)[0] //Two equal results for some reason
-  if(searchQueryForPattern) return getKeyFromSchemaQuery(searchQueryForPattern)
-  return null
+  return getKeyFromSchemaQuery(searchQueryForPattern)
 }
-
 
 type fetcherKeysModel = {
   quantity: string | number | null
@@ -53,7 +57,6 @@ const getUrlKeysFromSchema = (urlToParse: URL | string): fetcherKeysModel => {
   */
   if(typeof urlToParse == 'string') {
     urlToParse = new URL(urlToParse)
-    console.log(urlToParse)
   }
   const pathname = urlToParse.pathname
   const query = urlToParse.search
@@ -62,6 +65,8 @@ const getUrlKeysFromSchema = (urlToParse: URL | string): fetcherKeysModel => {
     offset: searchPathnameForPattern(pathname, ':offset:') ?? searchQueryForPattern(query, ':offset:')
   }
 }
+
+
 
 
 const defaultSchemaKeys: fetcherKeysModel = {
@@ -75,54 +80,67 @@ interface IncrementalFetcherInterface {
   countPerFetch?: number
 }
 
-const parseUrlSchema = (urlSchema: string, schemaKeys: fetcherKeysModel, schemaValues: fetcherKeysModel) => {
-  let resultUrl: string = urlSchema
-  
-  for(let key in schemaKeys) {
-    resultUrl = resultUrl.replace(`:${key}:`, schemaValues[key])
-  }
-  return resultUrl
-}
 
-const fetcher = url => fetch(url).then(r => r.json())
+const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-const useIncrementalFetcher =  (urlSchema, initiallyFetch, countPerFetch) => {
-  /*
-    urlSchema should specify endpoint nad :quantity: and :offset:
-  */
-  const q = initiallyFetch
-  const o = countPerFetch
-  const prepareUrl = (urlSchema: string, schemaKeys: fetcherKeysModel) => {
-    if(!schemaKeys.quantity || !schemaKeys.offset) throw('invalid schema provided')
-    return parseUrlSchema(urlSchema, schemaKeys, {quantity: q, offset: o})
-  }
-  const url = new URL(urlSchema)
-  const schemaKeys: fetcherKeysModel = urlSchema ? getUrlKeysFromSchema(url) : defaultSchemaKeys
-  
+const useIncrementalFetcher = (urlSchema, initiallyVisible, incrementBy, offset) => {
+  const schemaKeys: fetcherKeysModel = urlSchema ? getUrlKeysFromSchema(urlSchema) : defaultSchemaKeys
   const getSwrKey = (previousPageData: any) => {
-    if (previousPageData && !previousPageData.length) return null
-    const preparedUrl = prepareUrl(urlSchema, schemaKeys)
-    return preparedUrl
+    const parseUrlSchema = (urlSchema: string, schemaKeys: fetcherKeysModel, schemaValues: fetcherKeysModel) => {
+      let resultUrl: string = urlSchema
+      for(let key in schemaKeys) {
+        resultUrl = resultUrl.replace(`:${key}:`, schemaValues[key])
+      }
+      return resultUrl
+    }
+    const prepareUrl = (urlSchema: string, schemaKeys: fetcherKeysModel) => {
+      if(!schemaKeys.quantity || !schemaKeys.offset) throw('invalid schema provided')
+      const fetchValues = offset == 0 ? {quantity: initiallyVisible, offset: 0} : {quantity: incrementBy, offset: offset}
+      return parseUrlSchema(urlSchema, schemaKeys, fetchValues)
+    }
+    if(previousPageData && !previousPageData.length) return null
+    console.log(prepareUrl(urlSchema, schemaKeys))
+    return prepareUrl(urlSchema, schemaKeys)
   }
-  return useSWRInfinite(getSwrKey, fetcher)
+
+  const {data, error} = useSWRInfinite(getSwrKey, fetcher)
+
+  return {data, error, }
+
 }
 
-export const AutoExpandingFeed: React.FC<AutomaticFeedInterface> = ({initiallyVisible, incrementBy, children, ChildSchema, urlSchema}, props) => {
-  const [ visible, setVisible ] = useState(initiallyVisible)
-  const mockCallback = () => {
-    setVisible(v => v + incrementBy)
+
+
+export const AutoExpandingFeed: React.FC<AutomaticFeedInterface> = ({initiallyVisible, incrementBy, ChildSchema, urlSchema}) => {
+  const [ offset, setOffset ] = useState(0)
+  const [ currentData, setCurrentData ] = useState([])
+  const {data, error} = useIncrementalFetcher(urlSchema, initiallyVisible, incrementBy, offset)
+  const increment = () => {
+    data[0].length && setOffset(currentOffset => (
+      currentOffset == 0 ? initiallyVisible : currentOffset + incrementBy
+      ))
   }
-  const {data, error} = useIncrementalFetcher(urlSchema, visible, visible + incrementBy)
+  useEffect(() => {
+    data && setCurrentData(v => [...v, ...data[0]])
+  }, [data, setCurrentData])
+  console.log(data)
+  console.log(currentData)
   return (
     <ContentCutter 
-      CustomControls={(controlsProps) => 
-      <ObserverControls 
-        {...controlsProps} 
-        onFinishCallback={data ? () => mockCallback() : null}
-        expandRange={() => {}}
-      />}
+      CustomControls={(controlsProps) => (
+        <ObserverControls 
+          {...controlsProps} 
+          onFinishCallback={data ? () => increment() : null}
+          expandRange={() => increment()}
+        />
+      )}
     >
-      {!error && data && data[0].map((item, index) => <ChildSchema key={`AutomaticFeedChild__${index}`} {...item} />)}
+      {currentData.map(item => (
+        <ChildSchema {...item} key={`AutomaticFeedChild__${item.id}`} />
+      ))}
+      {data == undefined && (
+        <LoadingIndicator isLoading={!data} />
+      )}
     </ContentCutter>
   )
 }

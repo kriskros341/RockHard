@@ -10,13 +10,18 @@ export interface ContentCutterInterface<CustomControlsInterface = {}> {
   CustomControls?: React.FC<CustomControlsInterface & ContentCutterControlsInterface>
 } 
 
-export interface AutomaticFeedInterface<CustomControlsInterface = {}, T = {}> {
+export interface CustomLoadingInterface {
+  isLoading: boolean
+}
+
+export interface AutomaticFeedInterface<ChildInterface = {}, C = {}, L = {}> {
   urlSchema: string
   initiallyVisible?: number
   className?: string
   incrementBy?: number
-  CustomControls?: React.FC<CustomControlsInterface & ContentCutterControlsInterface>
-  ChildSchema: React.FC<T>
+  CustomControls?: React.FC<ContentCutterControlsInterface & C>
+  CustomLoading?: React.FC<CustomLoadingInterface & L>
+  ChildSchema: React.FC<ChildInterface>
 } 
 
 export interface ObserverControlsInterface extends ContentCutterControlsInterface {

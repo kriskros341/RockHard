@@ -38,4 +38,4 @@ data = createFakeNewsData(50)
 
 @app.get("/news/get_all", response_model = List[NewsModel])
 async def root(offset: int = 0, quantity: int = 50):
-    return createFakeNewsData(quantity)
+    return data[offset:offset + quantity]
