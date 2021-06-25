@@ -10,20 +10,21 @@ import AutoExpandingFeed from '../../components/Layout/Feed/AutoExpandingFeed'
 
 export type newsDataModel = {
   title: string
-  tags: string[]
+  tags: {
+    id: number
+    tag_name: string
+  }[]
   image?: string
   date: Date
 }
 
 export async function getStaticProps(context): Promise<staticPropsModel<newsDataModel[]>> {
-  const data: newsDataModel[] = await fetch('http://localhost:8000/news/get_all').then(data => data.json())
   return {
     props: {
       pageTitle: {
         title: `Co Nowego`,
         type: 'page'
       },
-      fetchData: data
     },
   }
 }
@@ -51,7 +52,9 @@ interface NewsInterface extends newsDataModel {
   news_id: number
 }
 
+
 const News: React.FC<NewsInterface> = ({title, tags, image, date, news_id}) => {
+  console.log(tags) 
   return (
     <Link href={`/news/${news_id}`}>
       <article className={`${style.News__component} ${globalStyle.borderAndShadow}`}>
@@ -67,7 +70,9 @@ const News: React.FC<NewsInterface> = ({title, tags, image, date, news_id}) => {
             </div>
           </div>
           <div className={style.News__meta}>
-            {tags.join(", ")}
+            {tags.map(tag => 
+              tag.tag_name + ' '
+            )}
             <br />
             <span className={style.News__decoration}>
               <CallendarSVG />
@@ -87,11 +92,10 @@ const Newsy = ({fetchData}) => {
       <AutoExpandingFeed 
         initiallyVisible={9} 
         incrementBy={8}
-        urlSchema={"http://localhost:8000/news/get_all?offset=:offset:&quantity=:quantity:&"}
+        urlSchema={"http://rockhard.ddns.net:3002/api?offset=:offset:&quantity=:quantity:&"}
         ChildSchema={(item:any) => <News news_id={item.id} {...item}/>}
       />
     </PageLayout>
   )
 }
-
 export default Newsy

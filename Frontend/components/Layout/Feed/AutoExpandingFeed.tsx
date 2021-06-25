@@ -81,7 +81,11 @@ interface IncrementalFetcherInterface {
 }
 
 
-const fetcher = (url: string) => fetch(url).then(r => r.json())
+const fetcher = (url: string) => fetch(url).then(r => {
+    
+
+    return r.json()
+})
 
 const useIncrementalFetcher = (urlSchema, initiallyVisible, incrementBy, offset) => {
   const schemaKeys: fetcherKeysModel = urlSchema ? getUrlKeysFromSchema(urlSchema) : defaultSchemaKeys
@@ -104,7 +108,7 @@ const useIncrementalFetcher = (urlSchema, initiallyVisible, incrementBy, offset)
   }
 
   const {data, error} = useSWRInfinite(getSwrKey, fetcher)
-
+  console.log(data)
   return {data, error, }
 
 }
@@ -121,9 +125,9 @@ export const AutoExpandingFeed: React.FC<AutomaticFeedInterface> = ({initiallyVi
       ))
   }
   useEffect(() => {
-    data && setCurrentData(v => [...v, ...data[0]])
+    data && setCurrentData(v => [...v, ...data[0].data[0]])
+      
   }, [data, setCurrentData])
-  console.log(data)
   console.log(currentData)
   return (
     <ContentCutter 

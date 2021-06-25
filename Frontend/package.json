@@ -25,6 +25,7 @@
     "framer-motion": "^4.1.17",
     "jest": "^27.0.4",
     "jest-dom": "^4.0.0",
+    "package.json": "^2.0.1",
     "react-map-gl": "^6.1.16",
     "scss": "^0.2.4",
     "swr": "^0.5.6",

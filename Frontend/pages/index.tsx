@@ -11,8 +11,8 @@ export async function getStaticProps(context) {
 
 export default function Home() {
   return (
-    <motion.div 
-      className={style.Home__component}
-      >dd</motion.div>
+    <motion.div className={style.Home__component} >
+      dd
+    </motion.div>
   )
 }

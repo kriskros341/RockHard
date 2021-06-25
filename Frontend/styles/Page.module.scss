@@ -1,8 +1,9 @@
+@import 'variables.scss';
 .Page__component {
   margin: 1.5rem 1.25rem 20vh 1.5rem;
   .Page__title {
     margin: 1.25rem 0rem;
-    font-family: Open Sans;
+    font-family: $title-font;
     font-style: normal;
     font-weight: normal;
     font-size: 34px;
@@ -11,7 +12,7 @@
   }
   .Page__articleTitle {
     margin: 1.25rem 0rem;
-    font-family: Open Sans;
+    font-family: $title-font;
     font-style: normal;
     font-weight: normal;
     font-size: 24px;
