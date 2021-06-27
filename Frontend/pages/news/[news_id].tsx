@@ -1,15 +1,20 @@
-import { createFakeDataArray, newsDataModel } from './index'
+import { newsDataModel } from './index'
 import { staticPropsModel } from '../../components/pagePropsType'
 import appStyle from '../../styles/app.module.scss'
 import { withRouter } from 'next/router'
+import useSWR from 'swr'
 
-const Posts: newsDataModel[] = createFakeDataArray()
+const fetcher = (url: string) => fetch(url).then(r => r.json())
+
+
+
 
 export async function getStaticPaths() {
-  let paths = []
-  for(let i: number = 1; i < Posts.length; i++) {
-    paths = [...paths, {params: {news_id: i.toString()}}] 
-  }
+  const Posts = await fetch('http://rockhard.ddns.net:3002/api/news')
+    .then(r => r.json())
+  const paths = Posts.data[0].map((item: newsDataModel) => {
+    return {params: {news_id: item.id.toString()}}
+  })
   return {
     paths: paths,
     fallback: true
@@ -17,11 +22,13 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context: any): Promise<staticPropsModel> {
-  const title: string = Posts[context.params.news_id].title
+  const news_id = context.params.news_id
+  const newsData = await fetch(`http://rockhard.ddns.net:3002/api/news/${news_id}`).then(r => r.json())
+  console.log(newsData)
   return {
     props: {
       pageTitle: {
-        title: title,
+        title: newsData.title,
         type: 'article'
       },
       additionalButtons: [
@@ -30,16 +37,15 @@ export async function getStaticProps(context: any): Promise<staticPropsModel> {
           text: "Go Back",
           icon: '/static/ArrowBack.png'
         },
-      ]
+      ],
+      fetchData: newsData,
     },
   }
 }
 
-const Koncert = ({router}) => {
-  const koncertId = parseInt(router.query.news_id)
-  console.log(Posts[koncertId])
-  return (
-    <div>{Posts[koncertId] && Posts[koncertId].title}</div>
+const Koncert = ({router, fetchData}) => {
+  return (  
+    <div>{fetchData.text}</div>
   )
 }
 

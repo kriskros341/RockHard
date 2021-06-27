@@ -21,6 +21,6 @@ export type staticPropsModel<T = {}> = {
   props: {
     pageTitle: pageTitleModel
     additionalButtons?: additionalButtonModel[]
-    fetchData?: T
+    fetchData?: T | any
   }
 }

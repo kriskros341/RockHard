@@ -81,11 +81,7 @@ interface IncrementalFetcherInterface {
 }
 
 
-const fetcher = (url: string) => fetch(url).then(r => {
-    
-
-    return r.json()
-})
+const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 const useIncrementalFetcher = (urlSchema, initiallyVisible, incrementBy, offset) => {
   const schemaKeys: fetcherKeysModel = urlSchema ? getUrlKeysFromSchema(urlSchema) : defaultSchemaKeys

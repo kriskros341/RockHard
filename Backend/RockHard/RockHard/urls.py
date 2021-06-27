@@ -15,11 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
 from rest_framework import routers
-from news.views import Test
+from news.views import Test, SingleNews, FileView
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', Test.as_view())
-]
+    path('api/news', Test.as_view()),
+    path('api/news/<news_id>', SingleNews.as_view()),
+    path(r'^upload/$', FileView.as_view(), name='file-upload')
+    ]
 
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

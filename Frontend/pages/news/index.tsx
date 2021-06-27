@@ -9,6 +9,7 @@ import PageLayout, { PageTitle } from '../../components/Layout/PageLayout'
 import AutoExpandingFeed from '../../components/Layout/Feed/AutoExpandingFeed'
 
 export type newsDataModel = {
+  id: number
   title: string
   tags: {
     id: number
@@ -30,23 +31,6 @@ export async function getStaticProps(context): Promise<staticPropsModel<newsData
 }
 
 
-
-export const createFakeData = (i: number): newsDataModel => {
-  return {
-    title: 'Album SPiRiTS In The Forest jest z wielu względów wyjątkowy w dorobku Depeche Mode',
-    tags: ['Muzyka Rockowa', 'Albumy', 'Depeche Mode'],
-    image: '/static/pob2.png',
-    date: new Date()
-  }
-}
-
-export const createFakeDataArray = (count: number) => {
-  let kon: newsDataModel[] = []
-  for(var i = 0; i < count; i++) {
-    kon.push(createFakeData(i))
-  }
-  return kon
-}
 
 interface NewsInterface extends newsDataModel {
   news_id: number
@@ -92,7 +76,7 @@ const Newsy = ({fetchData}) => {
       <AutoExpandingFeed 
         initiallyVisible={9} 
         incrementBy={8}
-        urlSchema={"http://rockhard.ddns.net:3002/api?offset=:offset:&quantity=:quantity:&"}
+        urlSchema={"http://rockhard.ddns.net:3002/api/news?offset=:offset:&quantity=:quantity:&"}
         ChildSchema={(item:any) => <News news_id={item.id} {...item}/>}
       />
     </PageLayout>

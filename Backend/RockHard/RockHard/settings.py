@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from .secret import Secrets
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -135,5 +136,9 @@ STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
+MEDIA_URL = r"media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, r'media/')
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
