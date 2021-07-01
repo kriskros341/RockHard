@@ -104,42 +104,40 @@ const useIncrementalFetcher = (urlSchema, initiallyVisible, incrementBy, offset)
   }
 
   const {data, error} = useSWRInfinite(getSwrKey, fetcher)
-  console.log(data)
-  return {data, error, }
-
+  const currentFetch = data ? data[0] : []
+  return [currentFetch, error]
 }
 
 
 
 export const AutoExpandingFeed: React.FC<AutomaticFeedInterface> = ({initiallyVisible, incrementBy, ChildSchema, urlSchema}) => {
   const [ offset, setOffset ] = useState(0)
-  const [ currentData, setCurrentData ] = useState([])
-  const {data, error} = useIncrementalFetcher(urlSchema, initiallyVisible, incrementBy, offset)
+  const [ currentFetch, error ] = useIncrementalFetcher(urlSchema, initiallyVisible, incrementBy, offset)
+  const [ currentData, setCurrentData ] = useState([]) 
+  const isFetchEmpty = currentFetch.length === 0
   const increment = () => {
-    data[0].length && setOffset(currentOffset => (
-      currentOffset == 0 ? initiallyVisible : currentOffset + incrementBy
-      ))
+    setOffset(currentOffset => currentOffset + incrementBy)
   }
   useEffect(() => {
-    data && setCurrentData(v => [...v, ...data[0].data[0]])
-      
-  }, [data, setCurrentData])
-  console.log(currentData)
+    !isFetchEmpty && setCurrentData([...currentData, ...currentFetch])
+    console.log(currentData)
+  }, [currentFetch])
+  
   return (
     <ContentCutter 
       CustomControls={(controlsProps) => (
         <ObserverControls 
           {...controlsProps} 
-          onFinishCallback={data ? () => increment() : null}
-          expandRange={() => increment()}
+          onFinishCallback={ () => isFetchEmpty ? null : increment()}
+          expandRange={() => isFetchEmpty ? null : increment()}
         />
       )}
     >
       {currentData.map(item => (
         <ChildSchema {...item} key={`AutomaticFeedChild__${item.id}`} />
       ))}
-      {data == undefined && (
-        <LoadingIndicator isLoading={!data} />
+      {currentFetch == undefined && (
+        <LoadingIndicator isLoading={!currentFetch} />
       )}
     </ContentCutter>
   )

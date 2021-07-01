@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { hbgrVariants, NavItemsVariants, ActiveMenuVariants } from './navbarVariants'
 import useTapGesture from './useTapGesture'
-import router, { useRouter } from 'next/router'
+import router, { useRouter, withRouter } from 'next/router'
 import { urlObjectModel } from '../pagePropsType'
 import useToggleQuery from './useToggleQuery'
 
@@ -135,6 +135,45 @@ const NavbarContent = ({isActive, toggleNavigation}) => {
   )
 }
 
+
+const AdditionalItems = ({isActive, additionalButtons}) => {
+  const router = useRouter()
+  const isServer = () => typeof window === 'undefined'
+  const specialCases = {
+    'back': () => !isServer ? window.history.back() : null,
+    'home': () => router.replace('/' , undefined, { shallow: true }) 
+  }
+  const cb = (pathObject) => 
+    specialCases[pathObject.pathname] ? (
+      specialCases[pathObject.pathname]()
+    ) : ( 
+      router.replace(pathObject, undefined, { shallow: true }) 
+    )
+  return (
+    <motion.div className={style.additionalItemsGroup} initial="hidden" animate="show" exit="hidden">
+      {isActive ? 
+        <ToggleCircleButton key={`navSettings`} to={{pathname: '/settings'}}>
+          <CogIconSvg />
+        </ToggleCircleButton>
+        : 
+        additionalButtons?.map(({to, text, icon, toggle}, index: number) => {
+          return (
+            toggle ? 
+              <ToggleCircleButton key={`navToggle_${index}`} to={to}>
+                <Image src={icon} height="24" width="24" alt={text}/>
+              </ToggleCircleButton>
+              :
+              <CircleButton key={`navButton_${index}`} label={text} callback={() => cb(to)}>
+                <Image src={icon} height="24" width="24" alt={text}/>
+              </CircleButton>
+          )
+        })
+      }
+    </motion.div>
+  )
+}
+
+
 const Navbar = ({additionalButtons}) => {
   const [ isActive, setActive ] = useState<boolean>(false)
   const toggleNavigation = () => setActive(v => !v)
@@ -151,24 +190,7 @@ const Navbar = ({additionalButtons}) => {
         </AnimatePresence>
         <NavbarContent isActive={isActive} toggleNavigation={toggleNavigation}/>
       </div>
-      <motion.div className={style.additionalItemsGroup} initial="hidden" animate="show" exit="hidden">
-        {isActive ? 
-          <ToggleCircleButton key={`navSettings`} to={{pathname: '/settings'}}>
-            <CogIconSvg />
-          </ToggleCircleButton>
-        : 
-          additionalButtons?.map(({to, text, icon, toggle}, index: number) =>
-            toggle ? 
-              <ToggleCircleButton key={`navToggle_${index}`} to={to}>
-                <Image src={icon} height="24" width="24" alt={text}/>
-              </ToggleCircleButton>
-            :
-              <CircleButton key={`navButton_${index}`} label={text} callback={() => router.replace(to, undefined, { shallow: true })}>
-                <Image src={icon} height="24" width="24" alt={text}/>
-              </CircleButton>
-            )
-        }
-      </motion.div>
+      <AdditionalItems isActive={isActive} additionalButtons={additionalButtons}/>
     </>
   )
 }

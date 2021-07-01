@@ -4,6 +4,8 @@
   - add more test articles
   - add tables for blog and performances
 
+  - make noip2 run on startup
+
 # CHECK OUT
   - get_absolute_url()
 
@@ -11,3 +13,4 @@
   - model method for accessing file url
   - models/fields has a lot info about image fields
   - django.core.files.storage
+  - cdrf.coi

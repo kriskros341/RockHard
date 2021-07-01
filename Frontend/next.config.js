@@ -5,4 +5,7 @@ module.exports = {
         presets: ["next/babel"]
     }
   },
+  images: {
+    domains: ["rockhard.ddns.net"]
+  }
 }

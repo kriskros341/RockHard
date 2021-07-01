@@ -5,14 +5,12 @@ import { withRouter } from 'next/router'
 import useSWR from 'swr'
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
-
-
-
+const serverUrl = 'http://rockhard.ddns.net:3002'
 
 export async function getStaticPaths() {
-  const Posts = await fetch('http://rockhard.ddns.net:3002/api/news')
+  const Posts = await fetch(`${serverUrl}/api/news`)
     .then(r => r.json())
-  const paths = Posts.data[0].map((item: newsDataModel) => {
+  const paths = Posts.map((item: newsDataModel) => {
     return {params: {news_id: item.id.toString()}}
   })
   return {
@@ -23,7 +21,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context: any): Promise<staticPropsModel> {
   const news_id = context.params.news_id
-  const newsData = await fetch(`http://rockhard.ddns.net:3002/api/news/${news_id}`).then(r => r.json())
+  const newsData = await fetch(`${serverUrl}/api/news/${news_id}`).then(r => r.json())
   console.log(newsData)
   return {
     props: {

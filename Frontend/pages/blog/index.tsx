@@ -3,10 +3,18 @@ import Image from 'next/image'
 import { useInView } from 'react-intersection-observer'
 import { staticPropsModel } from '../../components/pagePropsType'
 import globalStyle from '@/Styles/app.module.scss'
-import PageLayout, { PageTitle } from '../../components/Layout/PageLayout'
+import PageLayout, { PageTitle } from '@/Components/Layout/PageLayout'
 import { RouterPagination } from '@/Components/Layout/Pagination/Pagination'
+import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+
+
+const serverUrl = 'http://rockhard.ddns.net:3002'
+
 
 export async function getStaticProps(context): Promise<staticPropsModel> {
+  const Posts = await fetch(`${serverUrl}/api/blog`)
+    .then(r => r.json())
   return {
     props: {
       pageTitle: {title: `Posty`, type: 'page'},
@@ -19,51 +27,23 @@ export async function getStaticProps(context): Promise<staticPropsModel> {
           text: "Co Nowego",
           icon: '/static/ArticleIcon.png'
         },
-      ]
+      ],
+      fetchData: Posts
     },
   }
 }
 
-export const Posts = [
-  {
-    title: "Album SPiRiTS In The Forest jest z wielu względów wyjątkowy w dorobku Depeche Mode",
-    tags: ["Muzyka", "Rockowa", "Albumy", "Depeche Mode"],
-    image: "/static/pobrane.jpg",
-    date: new Date(2021, 4, 20)
-  },
-  {
-    title: "Album SPiRiTS In The Forest jest z wielu względów wyjątkowy w dorobku Depeche Mode",
-    tags: ["Muzyka", "Rockowa", "Albumy", "Depeche Mode"],
-    image: "/static/pobrane.jpg",
-    date: new Date(2021, 4, 20)
-  },
-  {
-    title: "Album SPiRiTS In The Forest jest z wielu względów wyjątkowy w dorobku Depeche Mode",
-    tags: ["Muzyka", "Rockowa", "Albumy", "Depeche Mode"],
-    image: "/static/pobrane.jpg",
-    date: new Date(2021, 4, 20)
-  },
-  {
-    title: "Album SPiRiTS In The Forest jest z wielu względów wyjątkowy w dorobku Depeche Mode",
-    tags: ["Muzyka", "Rockowa", "Albumy", "Depeche Mode"],
-    image: "/static/pobrane.jpg",
-    date: new Date(2021, 4, 20)
-  },
-  {
-    title: "Album SPiRiTS In The Forest jest z wielu względów wyjątkowy w dorobku Depeche Mode",
-    tags: ["Muzyka", "Rockowa", "Albumy", "Depeche Mode"],
-    image: "/static/pobrane.jpg",
-    date: new Date(2021, 4, 20)
-  },
-]
 
 type PostModel = {
+  id: number
   title: string
   tags: string[]
   image: string
   date: Date
-  item_id: number
 }
+
+
+const baseURL = 'http://rockhard.ddns.net:3002'
 
 
 const PostImage = ({image, isViewed}) => {
@@ -71,7 +51,7 @@ const PostImage = ({image, isViewed}) => {
     <div className={`${style.Post__image} ${isViewed && style.active}`}>
         <Image
           width="320"
-          src={image}
+          src={image ? baseURL + image.image : '/static/pob2.png'}
           height="320"
           >
         </Image>
@@ -86,33 +66,40 @@ const PostBody = ({title, tags}) =>
       {title}
     </div>
     <div className={style.Post__meta}>
-      {tags.join(", ")}
+      {tags.map(tag => 
+        tag.tag_name + ' '
+      )}
     </div>
   </article>
 
 
-const Post: React.FC<PostModel> = ({title, tags, image, date, item_id}) => {
+const Post: React.FC<PostModel> = ({id, title, tags, image, date}) => {
   const [observerRef, observerInView, ObserverEntry] = useInView({threshold: 0.8});
-  console.log(observerInView, ObserverEntry)
+
   return (
-    <div ref={observerRef} className={style.Post__component}>
-      <a href={`/blog/${item_id}`}>
+  
+    <motion.div 
+      className={style.Post__component} 
+      ref={observerRef} 
+    >
+      <Link href={`/blog/${id}`}>
         <div className={style.Post__container}>
-          <PostImage image={image} isViewed={observerInView} /> 
-          <PostBody title={`${title}_${item_id}`} tags={tags} />
+          <PostImage image={image} isViewed={observerInView} />          <PostBody title={`${title}_${id}`} tags={tags} />
         </div>
-      </a>
-    </div>
-  )
+      </Link>
+    </motion.div>
+      )
 }
 
 
-const Blog = () => {
+const Blog = ({fetchData}) => {
+  console.log(fetchData)
   return (
-    <PageLayout titleComponent={<PageTitle>Koncerty</PageTitle>}>
+    <PageLayout>
+      <PageTitle>Posty</PageTitle>
       <RouterPagination itemsPerPage={3}>
-        {Posts.map((item, index) => 
-          <Post key={`BlogPost__${index}`} item_id={index} {...item} />
+        {fetchData.map((item, index) => 
+          <Post key={`BlogPost__${index}`} {...item} />
         )}
       </RouterPagination>
     </PageLayout>

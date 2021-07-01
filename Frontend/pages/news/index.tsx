@@ -15,7 +15,11 @@ export type newsDataModel = {
     id: number
     tag_name: string
   }[]
-  image?: string
+  image?: {
+    id: number
+    description?: string
+    image: string
+  }
   date: Date
 }
 
@@ -36,16 +40,16 @@ interface NewsInterface extends newsDataModel {
   news_id: number
 }
 
+const baseURL = 'http://rockhard.ddns.net:3002'
 
 const News: React.FC<NewsInterface> = ({title, tags, image, date, news_id}) => {
-  console.log(tags) 
   return (
     <Link href={`/news/${news_id}`}>
       <article className={`${style.News__component} ${globalStyle.borderAndShadow}`}>
         <div className={style.News__container}>
           <div className={style.News__Image}>
             <Image 
-              src={image ? image : '/static/pob2.png'}
+              src={image ? baseURL + image.image : '/static/pob2.png'}
               width={400}
               height={400}
               />
@@ -72,10 +76,11 @@ const News: React.FC<NewsInterface> = ({title, tags, image, date, news_id}) => {
 
 const Newsy = ({fetchData}) => {
   return (
-    <PageLayout titleComponent={<PageTitle>Newsy</PageTitle>}>
+    <PageLayout>
+      <PageTitle>Newsy</PageTitle>
       <AutoExpandingFeed 
-        initiallyVisible={9} 
-        incrementBy={8}
+        initiallyVisible={3} 
+        incrementBy={2}
         urlSchema={"http://rockhard.ddns.net:3002/api/news?offset=:offset:&quantity=:quantity:&"}
         ChildSchema={(item:any) => <News news_id={item.id} {...item}/>}
       />

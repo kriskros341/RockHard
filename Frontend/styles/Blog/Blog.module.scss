@@ -52,6 +52,7 @@
     .Post__body {
       background: rgba(33, 33, 33, 0.8);
       box-sizing: border-box;
+      width: 100%;
       min-height: 300px;
       padding: 1.5rem 0.5rem;
       .Post__title {
@@ -73,4 +74,30 @@
       }
     }
   }
+}
+
+
+.PostPage__header {
+  width: 100%;
+  position: relative;
+  margin-bottom: 2rem;
+  .PostPage__title {
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #FAFAFA;
+    position: absolute;
+    bottom: -2rem;
+    width: 100%;
+    box-shadow: 0px -2px 0.5px rgba(0, 0, 0, 0.6); 
+    border-radius: 1rem 1rem 0 0;
+    background-color: $bg;
+    padding: 1rem 1rem;
+    text-align: center;
+  }
+}
+.PostPage__content {
+
 }

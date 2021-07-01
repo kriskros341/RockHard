@@ -83,7 +83,7 @@ export const StatePagination: React.FC<PaginationInterface> = (props) => {
 }
 
 export const RouterPagination: React.FC<PaginationInterface> = (props) => {
-  return <Pagination {...props} usePagination={useStatePagination} />
+  return <Pagination {...props} usePagination={useRouterPagination} />
 }
 
 export default Pagination
