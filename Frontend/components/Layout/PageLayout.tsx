@@ -1,5 +1,6 @@
 import globalStyle from '../../styles/Page.module.scss'
 
+
 export const PageTitle = ({children}) => (
   <h2 className={globalStyle.Page__title}>
     {children}

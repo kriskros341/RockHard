@@ -2,10 +2,10 @@ import { useRouter, withRouter } from "next/router"
 import { staticPropsModel } from '@/Components/pagePropsType'
 import appStyle from '@/Styles/app.module.scss'
 import style from '@/Styles/Blog/Blog.module.scss'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useViewportScroll } from 'framer-motion'
 import PageLayout, { PageTitle } from '@/Components/Layout/PageLayout'
 import Image from 'next/image'
-
+import { useEffect, useState, useReducer } from 'react'
 
 
 const Postss = null 
@@ -39,7 +39,7 @@ export async function getStaticProps(context: any): Promise<staticPropsModel> {
       additionalButtons: [
         {
           //page?
-          to: {pathname: 'back'},
+          to: {pathname: '/blog'},
           text: "Go Back",
           icon: '/static/ArrowBack.png'
         },
@@ -53,21 +53,44 @@ export async function getStaticProps(context: any): Promise<staticPropsModel> {
 
 const baseURL = 'http://rockhard.ddns.net:3002'
 
-const BlogPostTitle = ({image, children}) => {
-  console.log('image', image)
+const BlogPostTitle: React.FC<{image: string, tags: any[]}> = ({image, children, tags}) => {
+  const treshold: number = 20
+  const { scrollY } = useViewportScroll()
+  const [ , refresh ] = useReducer(v => ++v, 1) 
+  const isScrolled = () => scrollY.get() > treshold
+  const [ scrolledState, setScrolled ] = useState(isScrolled())
+  useEffect(() => {
+    const unsubscribe = scrollY.onChange(() => {
+      setScrolled(isScrolled()) 
+    })
+    return unsubscribe
+  }, [])
+  
+  console.log('rerender!')
+
+
   return (
+    <motion.div
+
+      className={style.PostPage__header}
+    >
+      <Image 
+        width='630'
+        height='630'
+        src={image}
+      />
+      <div className={style.PostPage__shortTagList}>
+        {tags.slice(0, 3).map((tag) => {
+          return (tag.name)
+        })}
+      </div>
       <motion.div 
-        className={style.PostPage__header}
+        animate={{y: scrolledState ? 0 : '6rem', transition: {type: 'tween'}}} 
+        className={`${style.PostPage__title} ${style.Post__title}`}
       >
-        <Image 
-          width='630'
-          height='630'
-          src={image}
-        />
-        <div className={`${style.PostPage__title} ${style.Post__title}`}>
-          {children}
-        </div>
+        {children}
       </motion.div>
+    </motion.div>
   )
 }
 
@@ -81,10 +104,12 @@ const BlogPost = ({router, fetchData}) => {
     )
   return (
     <PageLayout> 
-      <BlogPostTitle image={headerImage}>
+      <BlogPostTitle image={headerImage} tags={fetchData.tags}>
         {fetchData.title}
       </BlogPostTitle> 
-      {fetchData.text}
+      <div className={style.PostPage__content}>
+        {fetchData.text}
+      </div>
     </PageLayout>
   )
 }

@@ -14,7 +14,7 @@ class BlogTagModel(models.Model):
 class BlogPostModel(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, default='default')
-    text = models.TextField(max_length=255, default='default')
+    text = models.TextField(default='default')
     tags = models.ManyToManyField(BlogTagModel, null=True, blank=True)
     image = models.ForeignKey(ImageModel, null=True, blank=True, on_delete=models.PROTECT)
     date = models.DateTimeField(default=timezone.now)
