@@ -2,6 +2,8 @@ import style from '../styles/Home/Home.module.scss'
 import { AnimatePresence, motion, animate, useMotionValue } from 'framer-motion'
 import NextImage from 'next/image'
 import { useState, useReducer, useRef, useEffect } from 'react'
+import { StatePagination } from '@/Components/Layout/Pagination/Pagination'
+import { PaginationControlsInterface } from '@/Components/Layout/Pagination/PaginationTypes'
 
 
 export async function getStaticProps(context) {
@@ -13,83 +15,132 @@ export async function getStaticProps(context) {
 }
 
 
-const Test = ({images}) => {
-  const [ g, setG ] = useState(true)
-  const [ n, setN ] = useState(false)
-  const containerRef = useRef()
-  const cardboxPosition = useMotionValue(0)
-  console.log(cardboxPosition.get())
-  const [ , rerender ] = useReducer(v => ++v, 1) 
-  const cb = () => {
-    setN(v => !v)
-    cardboxPosition.set(n ? -20 : 0)
-  }
-  console.log('rerender')
-  const l = g ? 0 : 1
-  const runAnimation = () => {
-    setN(true)
-    setTimeout(() => setG(v => !v), 200)
-    setTimeout(() => {
-      setN(false)
-    }, 1000)
-  }
+const TestControls: React.FC<PaginationControlsInterface> = ({pageNumber, maxPageNumber, onNext, onPrevious}) => {
+  return (
+    <div className={style.controls__container}>
+      {pageNumber != 1 && (
+        <button
+          className={style.controls__button} 
+          onClick={() => onPrevious()}
+        >
+          previousPage
+        </button>
+      )}
+      {pageNumber}
+      {pageNumber != maxPageNumber && (
+        <button
+          className={style.controls__button} 
+          onClick={() => onNext()}
+        >
+          nextPage
+        </button>
+      )}
+    </div>
+  )
+}
+
+
+const Slide: React.FC<{image: string, title: string, animationState: Boolean}> = ({image, title, animationState}) => {
   return (
     <>
-    <motion.div
-      ref={containerRef}
-      onClick={() => cb()}
-      className={style.Home__test_container}
+    <motion.div 
+        initial={
+        {x: 240*-1, opacity: 0}
+      }
+      animate={{opacity: 1, x: animationState ? 0 : -20, transition: {type: 'tween'}}}
+      exit={
+        {x: 240, opacity: 0, transition: {type: 'tween'}}
+        }
     >
-      <AnimatePresence 
-        exitBeforeEnter
-        
-      >
-        {images[l] && (
-          <motion.div 
-            key={images[l]}
-            className={style.Home__test}
-            initial={
-              {x: '-100vw', transition: {type: 'tween'}}
-            }
-            animate={{x: n ? 0 : -20}}
-            exit={
-              {x: '100vw', transition: {type: 'tween'}}
-            }
-          >
-            <div className={style.test__overlay}></div>
-            <motion.div 
-              className={style.test__diskContainer}
-              animate={{x: n ? 0 : 40}}
-            >
-              <div className={style.test__disk}>
-            </div>
-          </motion.div>
-          <motion.div>
-            <NextImage
-              src={images[l]}
-              width='240'
-              height='240'
-            />
-          </motion.div>
-        </motion.div> )}
-      </AnimatePresence>
-    </motion.div>
-    <div 
-      style={{marginTop: 40}}
-      onClick={() => runAnimation()}
-    >
-    trigger animation
-    </div>
+      <motion.div 
+        className={style.test__diskContainer}
+        animate={{x: animationState ? 0 : 40}}
+      />
+      <NextImage
+        className={style.test__img}
+        src={image}
+        width='240'
+        height='240'
+      />
+      
+    </motion.div> 
+    <AnimatePresence>
+      {!animationState && (
+        <motion.div 
+          initial={{y: 20, opacity: 0}}
+          animate={{y: 0, opacity: 1}}
+          exit={{y: 20, opacity: 0}}  
+          className={style.test__title}
+        >
+          {title}
+        </motion.div>
+      )}
+    </AnimatePresence>
     </>
   )
 }
 
 
+const Test = ({images}) => {
+  const [ animationState, setAnimationState ] = useState(false)
+  const containerRef = useRef()
+  const withAnimation = (cb: () => void) => {
+    setAnimationState(true)
+    setTimeout(() => {
+      cb()
+    }, 400)
+    setTimeout(() => {
+      setAnimationState(false)
+    }, 1000)
+  }  
+
+  const customControls = (pagintaionProps) => {
+    return (
+    <TestControls 
+      {...pagintaionProps} 
+      pageNumber={pagintaionProps.pageNumber+1} // ?!?
+      onNext={() => {
+        withAnimation(pagintaionProps.onNext)
+      }}
+      onPrevious={() => {
+        withAnimation(pagintaionProps.onPrevious)
+      }}
+    />
+   ) 
+  }
+  return (
+    <motion.div
+      ref={containerRef}
+      className={style.Home__test_container}
+    >
+      <StatePagination
+        className={style.Home__test}
+        itemsPerPage={1}
+        CustomControls={customControls}
+      >
+        {images.map(({image, title}) => (
+          <Slide key={image} title={title} image={image} animationState={animationState}/>
+        ))}
+      </StatePagination>
+    </motion.div>
+  )
+}
+
 
 export default function Home() {
   const images = [
-    '/static/DefaultIcon.png',
-    '/static/pob2.png',
+    {
+      image: '/static/DefaultIcon.png', 
+      title: "To jest testowy tytu numer 1",
+    },
+    {
+      image: '/static/pob2.png', 
+      title: "To jest testowy tytu numer 2",
+    },
+    {
+      image: '/static/pobrane.jpg', 
+      title: "To jest testowy tytu numer 3",
+    }
   ]
   return (
     <div className={style.Home__component} >

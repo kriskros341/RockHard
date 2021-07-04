@@ -7,12 +7,15 @@ import {
   PaginationControlsInterface 
 } from './PaginationTypes'
 import { renderChildArrayIfIndex } from '../../someFunctions'
+import { AnimatePresence } from 'framer-motion'
+
 
 export const DefaultPaginationControls: React.FC<PaginationControlsInterface> = ({pageNumber, maxPageNumber, onNext, onPrevious}) => {
   /* 
     My default pagination controls.
     Any substitute should extend PaginationControlsInterface
   */
+  console.log(pageNumber, maxPageNumber)
   const handleNext = onNext ? () => onNext() : null
   const handlePrevious = onPrevious ? () => onPrevious() : null
   return (
@@ -56,9 +59,12 @@ export const Pagination: React.FC<PaginationInterface> = ({children, itemsPerPag
     callback()
   }
   const shouldRenderControls: boolean = childrenCount > itemsPerPage
+
   return (
     <div ref={paginationRef} className={`${className} ${globalStyle.Pagination__Component}`}>
-      {renderChildArrayIfIndex(children, isOnCurrentPage)}
+      <AnimatePresence exitBeforeEnter>
+        {renderChildArrayIfIndex(children, isOnCurrentPage)}
+      </AnimatePresence>
       {shouldRenderControls && (CustomControls ? 
         <CustomControls 
           pageNumber={currentPageNumber} 

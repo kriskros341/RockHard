@@ -41,13 +41,11 @@ export const bindIsBetweenFunction = (lowerEnd: number, higherEnd: number) => {
   return (value: number): boolean => (value >= lowerEnd && value < higherEnd)
 }
 
-export const renderChildArrayIfIndex = (children: React.ReactNode, fn: (value: number) => boolean): JSX.Element => {
+export const renderChildArrayIfIndex = (children: React.ReactNode, fn: (value: number) => boolean): JSX.Element[] => {
   return (
-    <>
-      {React.Children.map(children, (Item, index) => 
+      React.Children.map(children, (Item, index) => 
         fn(index) &&
           React.createElement(React.Fragment, {key: `renderedConditionally__${index}`}, Item)
-      )}
-    </>
+    )
   )
 }

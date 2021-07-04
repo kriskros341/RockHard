@@ -6,6 +6,9 @@ module.exports = {
     }
   },
   images: {
-    domains: ["rockhard.ddns.net"]
+    domains: [
+      "rockhard.ddns.net",
+      "rockhard.ddns.net:3002"
+    ]
   }
 }
