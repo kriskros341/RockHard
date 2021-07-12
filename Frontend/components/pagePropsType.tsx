@@ -14,7 +14,7 @@ type articleTypeModel = 'article' | 'page'
 
 export type pageTitleModel = {
   title: string
-  type: articleTypeModel
+  pageType: articleTypeModel
 }
 
 export type staticPropsModel<T = {}> = {

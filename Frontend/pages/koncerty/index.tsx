@@ -1,11 +1,14 @@
 import globalStyle from '../../styles/app.module.scss'
-import { Koncert, koncertModel, KoncertyMap } from '../../components/Koncerty/Koncerty'
+import { Koncert, performanceModel, KoncertyMap } from '../../components/Koncerty/Koncerty'
 import { staticPropsModel } from '../../components/pagePropsType'
 import { useEffect, useState } from 'react'
 import { withRouter } from 'next/router'
 import PageLayout, { PageTitle } from '../../components/Layout/PageLayout'
+import Image from 'next/image'
+
 
 export async function getStaticProps(context): Promise<staticPropsModel> {
+  const fetchData: performanceModel = await fetch('http://rockhard.ddns.net:3002/api/koncerty').then(r => r.json())
   return {
     props: {
       pageTitle: {
@@ -22,49 +25,43 @@ export async function getStaticProps(context): Promise<staticPropsModel> {
           icon: '/static/MapIcon.png',
           toggle: true
         },
-      ]
+      ],
+      fetchData: fetchData
     }
   }
 }
 
-const createFakeData = (i: number): koncertModel => {
-  return {
-    zespol: `Nazwa Zespołu Nazwa Zespołu_${i} `,
-    trasa: `Nazwa Trasy Koncertowej_${i} `,
-    miejsce: `Miejsce Koncertu Miejsce_${i} `,
-    data: `20.04.2021_${i} `,
-    image: Math.random() > 0.5 && '/static/pob2.png',
-    geodata: {
-      latitude: 51+Math.random()*4,
-      longitude: 17+Math.random()*6
-    }
-  }
-}
 
-const createFakeDataArray = () => {
-  let kon: koncertModel[] = []
-  for(var i = 0; i < 10; i++) {
-    kon.push(createFakeData(i))
-  }
-  return kon
-}
+const Koncerty = ({router, fetchData}) => {
+  const isMapActive = router.query['showMap'] == 'true'
+  
 
-
-const Koncerty = ({router}) => {
-  const [ koncerty, setKoncerty ] = useState<koncertModel[]>([])
-  useEffect(() => {
-    setKoncerty(createFakeDataArray())
-  }, [])
   return (
-    <PageLayout titleComponent={<PageTitle>Koncerty</PageTitle>}>
+    <PageLayout TitleComponent={<PageTitle>Koncerty</PageTitle>}>
       <>
-        <KoncertyMap shouldRender={router.query['showMap'] == 'true'} koncertyData={koncerty}/>
-        {koncerty.map((item: koncertModel, index) => 
-          <Koncert key={`Item${index}`} {...item} />
+        <KoncertyMap 
+          shouldRender={isMapActive} 
+          performanceData={fetchData}
+        />
+        
+        
+        {fetchData.map((performance: performanceModel, index) => 
+          <Koncert 
+            key={`Item${index}`} 
+            {...performance}
+          />
         )}
       </>
     </PageLayout>
   )
 }
+
+/*
+<Image
+  src='/static/loading.gif'
+  width='300'
+  height='60'
+/>
+*/
 
 export default withRouter(Koncerty)

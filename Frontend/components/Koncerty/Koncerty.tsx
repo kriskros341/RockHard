@@ -13,49 +13,71 @@ const mapVariants = {
   hidden: {y: "-30vh", opacity: 0.5, zIndex: -1},
   show: {y: 0, opacity: 1, transition: {type: "Inertia"}}
 }
-export const KoncertyMap = ({koncertyData, shouldRender}) =>
+export const KoncertyMap = ({performanceData, shouldRender}) =>
   <AnimatePresence>
     {shouldRender && 
       <motion.div variants={mapVariants} className={style.Map__component} initial="hidden" animate="show">
-        <TheMap koncertyData={koncertyData} />
+        <TheMap koncertyData={performanceData} />
       </motion.div>
     }
   </AnimatePresence>
 
-
-export const Koncert: React.FC<{zespol: string, trasa: string, miejsce: string, data: string}> = ({zespol, trasa, miejsce, data}) => {
+export const Koncert: React.FC<performanceCardInterface > = ({bandName, tourName, place, performanceDate }) => {
+  const date = new Date(performanceDate).toDateString()
   return (
-    <motion.article layout className={`${style.Koncert__component} ${globalStyle.borderAndShadow}`}>
+    <motion.article 
+      layout 
+      className={`${style.Koncert__component} ${globalStyle.borderAndShadow}`}
+    >
       <div className={style.Koncert__container}>
-        <div className={style.Koncert__zespol}>{zespol}</div>
-        <div className={style.Koncert__trasa}>{trasa}</div>
+        <div className={style.Koncert__zespol}>{bandName}</div>
+        <div className={style.Koncert__trasa}>{tourName}</div>
         <div className={style.Koncert__meta}>
           <span className={style.decoration}>
             <CallendarSVG />
           </span>
-          {miejsce}
+          {date}
         </div>
         <div className={style.Koncert__meta}>
           <span className={style.decoration}>
             <MapPointSVG />
           </span>
-          {data}
+          {place.placeName ? place.placeName : "TBA"}
         </div>
       </div>
     </motion.article>
   )
 }
 
-export type koncertModel = {
-  zespol: string,
-  trasa: string,
-  miejsce: string,
-  data: string,
-  image?: string
-  geodata: {
-    latitude: number
-    longitude: number
-  }
+export type placeModel = {
+  lat: number
+  lon: number
+  placeName: string,
+}
+
+
+export type performanceCardModel = {
+  id: number,
+  bandName: string,
+  tourName?: string,
+  image?: any
+  place: placeModel
+  performanceDate: string
+}
+
+export interface performanceCardInterface extends performanceCardModel {
+}
+
+export type performanceMarkerModel = {
+  id: number
+  bandName: string
+  image?: any
+  place: placeModel 
+}
+
+export type performanceModel = performanceCardModel & performanceMarkerModel & {
+  dateCreated: string,
+  dateEdited: string,
 }
 
 

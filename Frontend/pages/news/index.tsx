@@ -76,8 +76,7 @@ const News: React.FC<NewsInterface> = ({title, tags, image, date, news_id}) => {
 
 const Newsy = ({fetchData}) => {
   return (
-    <PageLayout>
-      <PageTitle>Newsy</PageTitle>
+    <PageLayout TitleComponent={<h2>Newsy</h2>}>
       <AutoExpandingFeed 
         initiallyVisible={3} 
         incrementBy={2}

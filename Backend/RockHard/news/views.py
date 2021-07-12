@@ -3,14 +3,14 @@ from rest_framework.views import APIView
 from django.http import HttpResponse, JsonResponse
 from .serializers import NewsSerializer 
 # Create your views here.
-from .models import TestModel
+from .models import NewsModel
 
 
-class Test(APIView):
+class Newsy(APIView):
     def get(self, request):
-        quantity = int(request.query_params.get('quantity', TestModel.objects.count()))
+        quantity = int(request.query_params.get('quantity', NewsModel.objects.count()))
         offset = int(request.query_params.get('offset', 0))
-        data = TestModel.objects.all()[offset: offset+quantity]
+        data = NewsModel.create_queryset_from_range(offset, offset+quantity)
         newsData = NewsSerializer(data, many=True)
         return JsonResponse(newsData.data, safe=False)
 
@@ -27,7 +27,7 @@ class Test(APIView):
 
 class SingleNews(APIView):
     def get(self, request, news_id):
-        data = TestModel.objects.get(id=news_id)
+        data = NewsModel.objects.get(id=news_id)
         theNews = NewsSerializer(data).data
         return JsonResponse(theNews)
 

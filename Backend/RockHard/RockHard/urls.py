@@ -19,17 +19,15 @@ from django.conf import settings
 from rest_framework import routers
 from django.conf.urls.static import static
 
-from news.views import Test, SingleNews 
-from blog.views import Blog, SingeBlogPost
 from mediaApp.views import FileView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/news', Test.as_view()),
-    path('api/news/<news_id>', SingleNews.as_view()),
     path(r'^upload/$', FileView.as_view()),
-    path('api/blog', Blog.as_view()), 
-    path('api/blog/<post_id>', SingeBlogPost.as_view()),
-    ]
+    
+    path('api/koncerty', include('koncerty.urls')),
+    path('api/news', include('news.urls')),
+    path('api/blog', include('blog.urls')),
+]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

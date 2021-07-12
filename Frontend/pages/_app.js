@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Navbar from '../components/Navigation/Navbar'
 import globals from '../styles/globals.scss'
 import SwitchAnimation from '@/Components/SwitchAnimation'
-
+import { useEffect } from 'react'
 
 
 

@@ -41,7 +41,7 @@ export const DefaultPaginationControls: React.FC<PaginationControlsInterface> = 
   )
 }
 
-export const Pagination: React.FC<PaginationInterface> = ({children, itemsPerPage, className, usePagination, CustomControls}) => {
+export const Pagination: React.FC<PaginationInterface> = ({children, itemsPerPage, className, usePagination, CustomControls, Proxy}) => {
   /* 
     Pagination component is used to limit the amount of data presented at once.
     It accepts (Element | Component)[] as Children with specified key attribute.
@@ -51,35 +51,38 @@ export const Pagination: React.FC<PaginationInterface> = ({children, itemsPerPag
       This way you avoid having lot's of history entries of essentially the same page.
       You lose the ability to router.back() to last seen page though...
   */
-  const childrenCount = React.Children.count(children)
-  const { currentPageNumber, paginationControls, isOnCurrentPage } = usePagination(childrenCount, itemsPerPage)
   const paginationRef = useRef(null)
   const scrollBackAnd = (callback: () => void) => {
     paginationRef.current.scrollTo(0, 0)
     callback()
   }
-  const shouldRenderControls: boolean = childrenCount > itemsPerPage
-
+  
+  const childComponentsCount = React.Children.count(children)
+  const shouldRenderControls: boolean = childComponentsCount > itemsPerPage
+  const { currentPageNumber, paginationControls, isOnCurrentPage } = usePagination(childComponentsCount, itemsPerPage)
+  
   return (
     <div ref={paginationRef} className={`${className} ${globalStyle.Pagination__Component}`}>
-      <AnimatePresence exitBeforeEnter>
-        {renderChildArrayIfIndex(children, isOnCurrentPage)}
-      </AnimatePresence>
-      {shouldRenderControls && (CustomControls ? 
+      {Proxy ? (
+        Proxy(renderChildArrayIfIndex(children, isOnCurrentPage))
+      ) : (
+        renderChildArrayIfIndex(children, isOnCurrentPage)
+      )}
+      {shouldRenderControls && (CustomControls ? (
         <CustomControls 
           pageNumber={currentPageNumber} 
-          maxPageNumber={Math.floor(childrenCount / itemsPerPage)} 
+          maxPageNumber={Math.floor(childComponentsCount / itemsPerPage)} 
           onNext={() => scrollBackAnd(paginationControls.nextPage)} 
           onPrevious={() => scrollBackAnd(paginationControls.previousPage)}
         />
-      : 
+      ) : (
         <DefaultPaginationControls 
           pageNumber={currentPageNumber} 
-          maxPageNumber={Math.floor(childrenCount / itemsPerPage)} 
+          maxPageNumber={Math.floor(childComponentsCount / itemsPerPage)} 
           onNext={() => scrollBackAnd(paginationControls.nextPage)} 
           onPrevious={() => scrollBackAnd(paginationControls.previousPage)}
         /> 
-      )}
+      ))}
       </div>
   )
 }

@@ -50,6 +50,9 @@
   max-width: 100%;
   height: 400px;
   z-index: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .Map__marker {
   color: #FAFAFA;

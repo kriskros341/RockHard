@@ -35,7 +35,7 @@ export async function getStaticProps(context: any): Promise<staticPropsModel> {
    
   return {
     props: {
-      pageTitle: {title: `Post z dnia`, type: 'page'},
+      pageTitle: {title: `Post z dnia`, pageType: 'page'},
       additionalButtons: [
         {
           //page?
@@ -103,7 +103,7 @@ const BlogPost = ({router, fetchData}) => {
       '/static/pob2.png'
     )
   return (
-    <PageLayout> 
+    <PageLayout TitleComponent={<h2>Koncerty</h2>}> 
       <BlogPostTitle image={headerImage} tags={fetchData.tags}>
         {fetchData.title}
       </BlogPostTitle> 

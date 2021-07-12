@@ -12,3 +12,7 @@ class ImageModel(models.Model):
     
     def __str__(self):
         return self.alias or self.image.name
+    
+    class Meta:
+        verbose_name_plural = "Images"
+

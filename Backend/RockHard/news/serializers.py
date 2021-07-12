@@ -1,19 +1,17 @@
 from rest_framework import serializers
-from .models import ImageModel
+from .models import ImageModel, NewsModel, TagModel
 from mediaApp.serializers import ImageSerializer
  
 class TagSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    tag_name = serializers.CharField(max_length=30)
+    class Meta:
+        model = TagModel
+        fields = '__all__'
 
 
 class NewsSerializer(serializers.Serializer):
-   id = serializers.IntegerField()
-   title = serializers.CharField(max_length=255)
-   text = serializers.CharField(max_length=1024)
-   date = serializers.DateTimeField()   
-   tags = TagSerializer(many=True)
-   image = ImageSerializer()
+    class Meta:
+        model = NewsModel
+        fields = '__all__'
 
 
 

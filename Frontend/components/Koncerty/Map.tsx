@@ -106,18 +106,19 @@ const getMapBoundsFromRef = (mapRef) => {
 
 const parseData = (koncertyData) => {
   /* returns geoJSON points with image and id from passed data */
-  const markers = koncertyData && !fetchError ? koncertyData : []
+  console.log(koncertyData)
+  const markers = koncertyData || []
   const parsedMarkers = markers.map((item: koncertModel, index: number): GeoJSONModel => ({
     type: "Feature",
     properties: {
       cluster: false,
-      id: index,
-      image: item.image,
-      category: "koncert"
+      id: item.id,
+      image: item.image || defaultImage,
+      category: "koncert",
     },
     geometry: {
       type: "Point",
-      coordinates: [item.geodata.longitude, item.geodata.latitude]
+      coordinates: [item.place.lon, item.place.lat]
     }
   })) 
   return parsedMarkers
@@ -139,6 +140,7 @@ const resizeMapWithWindow = (changeViewport: (changes) => void) => {
 }
 
 const Map: React.FC<{koncertyData: koncertModel[]}> = ({koncertyData}) => {
+
   const [viewport, setViewport] = useState<viewStateModel>({
     width: 400,
     height: 400,
@@ -158,6 +160,7 @@ const Map: React.FC<{koncertyData: koncertModel[]}> = ({koncertyData}) => {
   })
   const moveViewToPoint = (clusterId: number, longitude: number, latitude: number ): void => {
     /* Center map on given point */
+    
     const expansionZoom = Math.min(
       supercluster.getClusterExpansionZoom(clusterId), 20
       );
@@ -170,6 +173,9 @@ const Map: React.FC<{koncertyData: koncertModel[]}> = ({koncertyData}) => {
       })
     }
   resizeMapWithWindow(changeViewport)
+  
+
+
   return (
     <ReactMapGL
       {...viewport}
@@ -178,15 +184,18 @@ const Map: React.FC<{koncertyData: koncertModel[]}> = ({koncertyData}) => {
       maxZoom={maxZoom}
       ref={mapRef}
     >
-      {clusters.map((cluster: GeoJSONModel, index: number) => 
-        <MapPoint 
-          key={`cluster_${index}`}
-          supercluster={supercluster}  
-          cluster={cluster} 
-          centerViewportOnMe={
-          (lon: number, lat: number): void => moveViewToPoint(cluster.id, lon, lat)} 
-        />
-      )}
+      {clusters.map((cluster: GeoJSONModel, index: number) => {
+        console.log(cluster)
+        return (
+          <MapPoint 
+            key={`cluster_${index}`}
+            supercluster={supercluster}  
+            cluster={cluster} 
+            centerViewportOnMe={
+              (lon: number, lat: number): void => moveViewToPoint(cluster.id, lon, lat)} 
+          />
+        )
+      })}
     </ReactMapGL>
   );
 }

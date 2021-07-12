@@ -1,9 +1,12 @@
 from rest_framework import serializers
+from .models import BlogPostModel, BlogTagModel
+
+
 
 class TagSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    tag_name = serializers.CharField(max_length=30)
-
+    class Meta:
+       model = BlogTagModel
+       fields = '__all__'
 
 class ImageSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -12,10 +15,9 @@ class ImageSerializer(serializers.Serializer):
     
 
 
-class BlogPostSerializer(serializers.Serializer):
-   id = serializers.IntegerField()
-   title = serializers.CharField(max_length=255)
-   text = serializers.CharField(max_length=1024)
-   date = serializers.DateTimeField()   
-   tags = TagSerializer(many=True)
-   image = ImageSerializer()
+class BlogPostSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True)
+    image = ImageSerializer()
+    class Meta:
+        model = BlogPostModel
+        fields = '__all__'

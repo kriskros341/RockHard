@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 type paginationUtilitiesModel = {
   currentPageNumber: number
   paginationControls: {
@@ -13,7 +15,8 @@ export interface usePaginationInterface {
 
 export interface PaginationInterface<CustomControls = {}> {
   itemsPerPage: number, 
-  className?: string, 
+  className?: string,
+  Proxy?: (children) => ReactNode
   usePagination?: usePaginationInterface
   CustomControls?: React.FC<CustomControls & PaginationControlsInterface>
 }
