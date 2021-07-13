@@ -24,12 +24,14 @@ const pageTransitionVariants = {
 
 
 const SwitchAnimation = ({children, router, excludedPaths}) => {
+  const variants = 
+    !excludedPaths.includes(router.pathname) && pageTransitionVariants
   return (
     <AnimateSharedLayout>
       <AnimatePresence>
         <motion.div 
           className={style.test} 
-          variants={!excludedPaths.includes(router.pathname) && pageTransitionVariants} 
+          variants={variants} 
           initial="initial" 
           animate="animate" 
           exit="exit" 

@@ -16,22 +16,35 @@ const mapVariants = {
 export const KoncertyMap = ({performanceData, shouldRender}) =>
   <AnimatePresence>
     {shouldRender && 
-      <motion.div variants={mapVariants} className={style.Map__component} initial="hidden" animate="show">
-        <TheMap koncertyData={performanceData} />
+      <motion.div 
+        variants={mapVariants} 
+        className={style.Map__component} 
+        initial="hidden" 
+        animate="show"
+      >
+        <TheMap performanceData={performanceData} />
       </motion.div>
     }
   </AnimatePresence>
 
-export const Koncert: React.FC<performanceCardInterface > = ({bandName, tourName, place, performanceDate }) => {
+export const Koncert: React.FC<performanceCardInterface> = ({bandName, tourName, place, performanceDate }) => {
   const date = new Date(performanceDate).toDateString()
+  const articleClasses = `
+    ${style.Koncert__component} 
+    ${globalStyle.borderAndShadow}
+  `
   return (
     <motion.article 
       layout 
-      className={`${style.Koncert__component} ${globalStyle.borderAndShadow}`}
+      className={articleClasses}
     >
       <div className={style.Koncert__container}>
-        <div className={style.Koncert__zespol}>{bandName}</div>
-        <div className={style.Koncert__trasa}>{tourName}</div>
+        <div className={style.Koncert__zespol}>
+          {bandName}
+        </div>
+        <div className={style.Koncert__trasa}>
+          {tourName}
+        </div>
         <div className={style.Koncert__meta}>
           <span className={style.decoration}>
             <CallendarSVG />

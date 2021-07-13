@@ -41,7 +41,13 @@ const slideVariants = {
 }
 
 
-const Slide: React.FC<{direction: string, data: {image: string, title: string}, animationState: Boolean}> = ({direction, data, animationState}) => {
+interface slideInterface {
+  direction: string, 
+  data: {image: string, title: string}, 
+  animationState: Boolean
+}
+
+const Slide: React.FC<slideInterface> = ({direction, data, animationState}) => {
   const animationProps = {
     offset: animationState ? 0 : -20, 
     direction: direction == "left" ? -1 : 1
@@ -98,7 +104,9 @@ const useSlideAnimation = () => {
     Just some things I want to keep out of the main component
   */
   const [ animationState, setAnimationState ] = useState<boolean>(false)
-  const [ slideDirection, setSlideDirection ] = useState<"left" | "right">("right")
+  const [ slideDirection, setSlideDirection ] = useState<"left" | "right">(
+    "right"
+  )
   const slideWithAnimation = useCallback((cb: () => void) => {
     setAnimationState(true)
     setTimeout(() => {
@@ -118,7 +126,12 @@ const Slideshow = ({images}) => {
     to display one component at the time.
     not yet tsx
   */
-  const { animationState, slideWithAnimation, slideDirection, setSlideDirection } = useSlideAnimation()
+  const { 
+    animationState, 
+    slideWithAnimation, 
+    slideDirection, 
+    setSlideDirection 
+  } = useSlideAnimation()
   const CustomControls = (pagintaionProps) => (
     <SlideshowControls 
       {...pagintaionProps} 

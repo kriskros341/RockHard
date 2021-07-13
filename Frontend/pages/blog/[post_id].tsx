@@ -8,15 +8,11 @@ import Image from 'next/image'
 import { useEffect, useState, useReducer } from 'react'
 
 
-const Postss = null 
-
-
-
-const fetcher = (url: string) => fetch(url).then(r => r.json())
 const serverUrl = 'http://rockhard.ddns.net:3002'
+const fetcher = (url: string) => fetch(url).then(r => r.json())
+
 
 export async function getStaticPaths(c) {
-  console.log(c)
   const Posts = await fetch(`${serverUrl}/api/blog`)
     .then(r => r.json())
   const paths = Posts.map((item) => {
@@ -30,9 +26,9 @@ export async function getStaticPaths(c) {
 
 
 export async function getStaticProps(context: any): Promise<staticPropsModel> {
-  const post_id = context.params.post_id
-  const postData = await fetch(`${serverUrl}/api/blog/${post_id}`).then(r => r.json())
-   
+  const postId = context.params.post_id
+  const postUrl = `${serverUrl}/api/blog/${postId}`
+  const postData = await fetch(postUrl).then(r => r.json())
   return {
     props: {
       pageTitle: {title: `Post z dnia`, pageType: 'page'},
@@ -50,13 +46,17 @@ export async function getStaticProps(context: any): Promise<staticPropsModel> {
 }
 
 
+interface BLogPostTitleInterface {
+  image: string
+  tags: {
+    
+  }
+}
 
-const baseURL = 'http://rockhard.ddns.net:3002'
 
 const BlogPostTitle: React.FC<{image: string, tags: any[]}> = ({image, children, tags}) => {
   const treshold: number = 20
   const { scrollY } = useViewportScroll()
-  const [ , refresh ] = useReducer(v => ++v, 1) 
   const isScrolled = () => scrollY.get() > treshold
   const [ scrolledState, setScrolled ] = useState(isScrolled())
   useEffect(() => {
@@ -65,13 +65,16 @@ const BlogPostTitle: React.FC<{image: string, tags: any[]}> = ({image, children,
     })
     return unsubscribe
   }, [])
-  
-  console.log('rerender!')
-
-
+  const titleClasses = `
+    ${style.PostPage__title} 
+    ${style.Post__title}
+  `
+  const titleAnimationObject = {
+    y: scrolledState ? 0 : '6rem', 
+    transition: {type: 'tween'}
+  }
   return (
     <motion.div
-
       className={style.PostPage__header}
     >
       <Image 
@@ -85,8 +88,8 @@ const BlogPostTitle: React.FC<{image: string, tags: any[]}> = ({image, children,
         })}
       </div>
       <motion.div 
-        animate={{y: scrolledState ? 0 : '6rem', transition: {type: 'tween'}}} 
-        className={`${style.PostPage__title} ${style.Post__title}`}
+        animate={titleAnimationObject} 
+        className={titleClasses}
       >
         {children}
       </motion.div>
@@ -96,15 +99,17 @@ const BlogPostTitle: React.FC<{image: string, tags: any[]}> = ({image, children,
 
 const BlogPost = ({router, fetchData}) => {
   const articleImage = fetchData.image
-  console.log('object', articleImage)
   const headerImage = articleImage ? (
-      baseURL + articleImage.image 
+      serverUrl + articleImage.image 
     ) : (
       '/static/pob2.png'
     )
   return (
     <PageLayout TitleComponent={<h2>Koncerty</h2>}> 
-      <BlogPostTitle image={headerImage} tags={fetchData.tags}>
+      <BlogPostTitle 
+        image={headerImage} 
+        tags={fetchData.tags}
+      >
         {fetchData.title}
       </BlogPostTitle> 
       <div className={style.PostPage__content}>

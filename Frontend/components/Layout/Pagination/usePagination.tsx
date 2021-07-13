@@ -16,8 +16,12 @@ export const useStatePagination: usePaginationInterface = (itemCount, itemsPerPa
     nextPage: () => setCurrentPageNumber(v => ++v),
     previousPage: () => setCurrentPageNumber(v => --v)
   }
-  const firstVisibleIndex = Math.max(0 + currentPageNumber * itemsPerPage, 0)
-  const lastVisibleIndex = Math.min(itemsPerPage + currentPageNumber * itemsPerPage, itemCount)
+  const firstVisibleIndex = Math.max(
+    0 + currentPageNumber * itemsPerPage, 0
+  )
+  const lastVisibleIndex = Math.min(
+    itemsPerPage + currentPageNumber * itemsPerPage, itemCount
+  )
   const isOnCurrentPage = (itemIndex: number) => {
     /* 
       Checks if index of current item is within the range of currently displayed indexes
@@ -39,8 +43,16 @@ export const useRouterPagination: usePaginationInterface = (itemCount, itemsPerP
     const currentPageString = 
       router.query.page ? router.query.page : "0"
     const givenPageNumber = 
-      typeof currentPageString == 'object' ? currentPageString[0] : currentPageString
-    const currentPageNumber = isNumeric(givenPageNumber) ? parseInt(givenPageNumber) : 0
+      typeof currentPageString == 'object' ? (
+        currentPageString[0]
+      ) : ( 
+        currentPageString 
+      )
+    const currentPageNumber = isNumeric(givenPageNumber) ? (
+      parseInt(givenPageNumber) 
+    ) : (
+      0
+    )
     return currentPageNumber
   }
   const currentPageNumber = getCurrentPageNumber()
@@ -56,9 +68,16 @@ export const useRouterPagination: usePaginationInterface = (itemCount, itemsPerP
     nextPage: () => changePage(v => ++v),
     previousPage: () => changePage(v => --v)
   }
-  const firstVisibleIndex = Math.max(0 + currentPageNumber * itemsPerPage, 0)
-  const lastVisibleIndex = Math.min(itemsPerPage + currentPageNumber * itemsPerPage, itemCount)
-  const isOnCurrentPage = bindIsBetweenFunction(firstVisibleIndex, lastVisibleIndex)
+  const firstVisibleIndex = Math.max(
+    0 + currentPageNumber * itemsPerPage, 0
+  )
+  const lastVisibleIndex = Math.min(
+    itemsPerPage + currentPageNumber * itemsPerPage, itemCount
+  )
+  const isOnCurrentPage = bindIsBetweenFunction(
+    firstVisibleIndex, 
+    lastVisibleIndex
+  )
   return {currentPageNumber, paginationControls, isOnCurrentPage}
 }
 

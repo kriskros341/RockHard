@@ -3,7 +3,7 @@ import ReactMapGL, { Marker, FlyToInterpolator } from 'react-map-gl';
 import style from '../../styles/Koncerty/Koncerty.module.scss'
 import Image from 'next/image'
 import useSupercluster from 'use-supercluster'
-import {koncertModel} from './Koncerty'
+import { performanceModel } from './Koncerty'
 import { viewStateModel, GeoJSONModel } from './mapTypes'
 /*
 GeoJSON Schema:
@@ -28,7 +28,10 @@ GeoJSON Schema:
 const defaultImage = '/static/EyeIcon.png'
 
 const MapPoint = ({cluster, supercluster, centerViewportOnMe}) => {
-  const { cluster: isCluster, point_count: pointCount } = cluster.properties
+  const { 
+    cluster: isCluster, 
+    point_count: pointCount 
+  } = cluster.properties
   const [ longtitude, latitude ] = cluster.geometry.coordinates
   if(isCluster) {
     return (
@@ -61,8 +64,15 @@ const MapMarker = ({coordinates, image, fn}) => {
       offsetLeft={-20} 
       offsetTop={-10}
     >
-      <div className={style.Map__marker} onClick={() => fn()} >
-        <Image height={44} width={44} src={image ? image : defaultImage} />
+      <div 
+        className={style.Map__marker} 
+        onClick={() => fn()}
+      >
+        <Image 
+          height={44} 
+          width={44} 
+          src={image ? image : defaultImage} 
+        />
       </div>
     </Marker>
   )
@@ -76,7 +86,12 @@ const ClusterMarker = ({moveViewToPoint, coordinates, count, leafs}) => {
         {leafs.map(item => 
           <div className={style.cluster__inner}>
             <Image
-              src={item.properties.image ? item.properties.image : defaultImage}
+              src={
+                item.properties.image ? (
+                  item.properties.image 
+                ) : (
+                  defaultImage
+                )}
               width={44}
               height={44}
               quality="low"
@@ -104,23 +119,22 @@ const getMapBoundsFromRef = (mapRef) => {
     .flat() : null
 }
 
-const parseData = (koncertyData) => {
+const parseData = (markers) => {
   /* returns geoJSON points with image and id from passed data */
-  console.log(koncertyData)
-  const markers = koncertyData || []
-  const parsedMarkers = markers.map((item: koncertModel, index: number): GeoJSONModel => ({
-    type: "Feature",
-    properties: {
-      cluster: false,
-      id: item.id,
-      image: item.image || defaultImage,
-      category: "koncert",
-    },
-    geometry: {
-      type: "Point",
-      coordinates: [item.place.lon, item.place.lat]
-    }
-  })) 
+  const parsedMarkers = markers.map(
+    (item: performanceModel, index: number): GeoJSONModel => ({
+      type: "Feature",
+      properties: {
+        cluster: false,
+        id: item.id,
+        image: item.image || defaultImage,
+        category: "koncert",
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [item.place.lon, item.place.lat]
+      }
+    })) 
   return parsedMarkers
 }
 
@@ -139,7 +153,7 @@ const resizeMapWithWindow = (changeViewport: (changes) => void) => {
   }
 }
 
-const Map: React.FC<{koncertyData: koncertModel[]}> = ({koncertyData}) => {
+const Map: React.FC<{performanceData: performanceModel}> = ({performanceData}) => {
 
   const [viewport, setViewport] = useState<viewStateModel>({
     width: 400,
@@ -150,7 +164,7 @@ const Map: React.FC<{koncertyData: koncertModel[]}> = ({koncertyData}) => {
   });
   const mapRef = useRef(null)
   const changeViewport = (changes) => setViewport({...viewport, ...changes})
-  const mapData = parseData(koncertyData)
+  const mapData = parseData(performanceData)
   const mapBounds = getMapBoundsFromRef(mapRef) || null
   const { clusters, supercluster } = useSupercluster({
     points: mapData, 
@@ -192,7 +206,10 @@ const Map: React.FC<{koncertyData: koncertModel[]}> = ({koncertyData}) => {
             supercluster={supercluster}  
             cluster={cluster} 
             centerViewportOnMe={
-              (lon: number, lat: number): void => moveViewToPoint(cluster.id, lon, lat)} 
+              (lon: number, lat: number): void => (
+                moveViewToPoint(cluster.id, lon, lat)
+              )}
+             
           />
         )
       })}

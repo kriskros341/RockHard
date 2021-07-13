@@ -59,10 +59,17 @@ export const Pagination: React.FC<PaginationInterface> = ({children, itemsPerPag
   
   const childComponentsCount = React.Children.count(children)
   const shouldRenderControls: boolean = childComponentsCount > itemsPerPage
-  const { currentPageNumber, paginationControls, isOnCurrentPage } = usePagination(childComponentsCount, itemsPerPage)
-  
+  const { 
+    currentPageNumber, 
+    paginationControls, 
+    isOnCurrentPage 
+  } = usePagination(childComponentsCount, itemsPerPage)
+  const paginationClasses = `
+    ${className} 
+    ${globalStyle.Pagination__Component}
+  `
   return (
-    <div ref={paginationRef} className={`${className} ${globalStyle.Pagination__Component}`}>
+    <div ref={paginationRef} className={paginationClasses}>
       {Proxy ? (
         Proxy(renderChildArrayIfIndex(children, isOnCurrentPage))
       ) : (

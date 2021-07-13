@@ -8,7 +8,11 @@ export const PageTitle = ({children}) => (
 )
 
 
-const PageLayout: React.FC<{TitleComponent: JSX.Element}> = ({children, TitleComponent}) => {
+interface PageLayoutInterface {
+  TitleComponent: JSX.Element
+}
+
+const PageLayout: React.FC<PageLayoutInterface> = ({children, TitleComponent}) => {
   return (
     <main className={globalStyle.Page__container}>
       {TitleComponent}

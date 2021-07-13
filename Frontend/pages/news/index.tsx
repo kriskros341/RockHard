@@ -28,7 +28,7 @@ export async function getStaticProps(context): Promise<staticPropsModel<newsData
     props: {
       pageTitle: {
         title: `Co Nowego`,
-        type: 'page'
+        pageType: 'page'
       },
     },
   }

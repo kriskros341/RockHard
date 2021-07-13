@@ -1,4 +1,4 @@
-
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from django.http import HttpResponse, JsonResponse
 from .serializers import NewsSerializer 
@@ -15,7 +15,6 @@ class Newsy(APIView):
         return JsonResponse(newsData.data, safe=False)
 
     def post(self, request): 
-        print(request)
         return JsonResponse({'ho':'ha'})
 
     def put(self, request):
@@ -28,7 +27,9 @@ class Newsy(APIView):
 class SingleNews(APIView):
     def get(self, request, news_id):
         data = NewsModel.objects.get(id=news_id)
+        print(data)
         theNews = NewsSerializer(data).data
+        print(theNews)
         return JsonResponse(theNews)
 
 

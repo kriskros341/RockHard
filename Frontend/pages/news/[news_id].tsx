@@ -8,11 +8,13 @@ const fetcher = (url: string) => fetch(url).then(r => r.json())
 const serverUrl = 'http://rockhard.ddns.net:3002'
 
 export async function getStaticPaths() {
-  const Posts = await fetch(`${serverUrl}/api/news`)
+  const Posts: newsDataModel[] = 
+    await fetch(`${serverUrl}/api/news`)
     .then(r => r.json())
-  const paths = Posts.map((item: newsDataModel) => {
-    return {params: {news_id: item.id.toString()}}
-  })
+  console.log('aaaaaaaaaq', Posts)
+  const paths = Posts.map((item: newsDataModel) => (
+    {params: {news_id: item.id.toString()}}
+  ))
   return {
     paths: paths,
     fallback: true
@@ -21,13 +23,14 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context: any): Promise<staticPropsModel> {
   const news_id = context.params.news_id
-  const newsData = await fetch(`${serverUrl}/api/news/${news_id}`).then(r => r.json())
-  console.log(newsData)
+  const newsData = 
+    await fetch(`${serverUrl}/api/news/${news_id}`)
+    .then(r => r.json())
   return {
     props: {
       pageTitle: {
         title: newsData.title,
-        type: 'article'
+        pageType: 'article'
       },
       additionalButtons: [
         {
@@ -42,8 +45,9 @@ export async function getStaticProps(context: any): Promise<staticPropsModel> {
 }
 
 const Koncert = ({router, fetchData}) => {
+  console.log(fetchData)
   return (  
-    <div>{fetchData.text}</div>
+    <div>{'aaa'}</div>
   )
 }
 

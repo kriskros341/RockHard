@@ -6,14 +6,17 @@ import { withRouter } from 'next/router'
 import PageLayout, { PageTitle } from '../../components/Layout/PageLayout'
 import Image from 'next/image'
 
+const baseUrl = 'http://rockhard.ddns.net:3002/api/koncerty'
 
 export async function getStaticProps(context): Promise<staticPropsModel> {
-  const fetchData: performanceModel = await fetch('http://rockhard.ddns.net:3002/api/koncerty').then(r => r.json())
+  const fetchData: performanceModel = 
+    await fetch(baseUrl)
+    .then(r => r.json())
   return {
     props: {
       pageTitle: {
         title: "Koncerty",
-        type: 'page'
+        pageType: 'page'
       },
       additionalButtons: [
         {
@@ -34,8 +37,6 @@ export async function getStaticProps(context): Promise<staticPropsModel> {
 
 const Koncerty = ({router, fetchData}) => {
   const isMapActive = router.query['showMap'] == 'true'
-  
-
   return (
     <PageLayout TitleComponent={<PageTitle>Koncerty</PageTitle>}>
       <>
@@ -43,8 +44,6 @@ const Koncerty = ({router, fetchData}) => {
           shouldRender={isMapActive} 
           performanceData={fetchData}
         />
-        
-        
         {fetchData.map((performance: performanceModel, index) => 
           <Koncert 
             key={`Item${index}`} 

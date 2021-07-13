@@ -7,7 +7,8 @@ from misc.models import abstract_tag_model, abstract_post_model
 
 
 class TagModel(abstract_tag_model):
-    pass
+    class Meta:
+        verbose_name_plural = "Newsy Tagi"
 
 
 class NewsModel(abstract_post_model):

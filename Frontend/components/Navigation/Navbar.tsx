@@ -33,10 +33,16 @@ interface ToggleCircleButtonInterface {
 }
 
 const ToggleCircleButton: React.FC<ToggleCircleButtonInterface> = ({to, children}) => {
-  const [ isActive, handleToggle ] = useToggleQuery(to ? to : {pathname: '/'})
+  const [ isActive, handleToggle ] = useToggleQuery(
+    to ? to : {pathname: '/'}
+  )
+  const buttonClasses = `
+    ${style.ToggleCircleButton} 
+    ${isActive && style.active}
+  `
   return (
     <div 
-      className={`${style.ToggleCircleButton} ${isActive && style.active}`}
+      className={buttonClasses}
       onClick={() => handleToggle()} 
     >
       <CircleButton label={"Options"}>
@@ -63,15 +69,28 @@ interface MobileHamburgerInterface {
 
 const MobileHamburger: React.FC<MobileHamburgerInterface> = ({isNavigationActive, toggleNavigation}) => {
   return (
-    <div onClick={() => toggleNavigation()} className={style.MobileNavigationButtonContainer}>
+    <div 
+      onClick={() => toggleNavigation()} 
+      className={style.MobileNavigationButtonContainer}
+    >
       <CircleButton label="Mobile Navigation Button">
         <AnimatePresence exitBeforeEnter>
           {isNavigationActive ?
-            <motion.div key="a" variants={hbgrVariants} initial="initial" animate="animate">
+            <motion.div 
+              key="singleItemKeyA" 
+              variants={hbgrVariants} 
+              initial="initial" 
+              animate="animate"
+            >
               <MobileCancelButtonSvg />
             </motion.div>
           :
-            <motion.div key="b" variants={hbgrVariants} initial="initial" animate="animate">
+            <motion.div 
+              key="singleItemKeyA" 
+              variants={hbgrVariants} 
+              initial="initial" 
+              animate="animate"
+            >
               <MobileNavigationButtonSvg />
             </motion.div>
           }
@@ -93,16 +112,37 @@ const BasicNavigation: React.FC<{closeNavigation: () => void, extendNavigation: 
   }
   const [ currentMotionValue, updateMotionValue, restartMotionValue ] = 
     useTapGesture(height, shouldBecomeInactive)
+  const navContentClasses = `
+    ${style.Navbar__links__container} 
+    ${style.contentWidth}
+  `
   return (
-    <motion.div layoutId="MenuId" animate={{height: currentMotionValue}} className={style.Navbar__container_active}>
-      <motion.div whileTap={{scale: 0.9}} onPan={updateMotionValue} onPanEnd={panEndHandler} className={style.lines}>
+    <motion.div 
+      layoutId="MenuId" 
+      animate={{height: currentMotionValue}} 
+      className={style.Navbar__container_active}
+    >
+      <motion.div 
+        whileTap={{scale: 0.9}} 
+        onPan={updateMotionValue} 
+        onPanEnd={panEndHandler} 
+        className={style.lines}
+      >
         <LinesSvg/>
       </motion.div>
-      <nav className={`${style.Navbar__links__container} ${style.contentWidth}`}>
+      <nav className={navContentClasses}>
         {navlinks.map(({to, text, icon}, index) => 
-          <motion.li key={`BasicNavigationLink__${index}`} whileTap={{scale: 0.95}}>
+          <motion.li 
+            key={`BasicNavigationLink__${index}`} 
+            whileTap={{scale: 0.95}}
+          >
             <NavbarLink to={to}>
-              <Image height="40" width="40" src={icon} alt={text} />
+              <Image 
+                height="40" 
+                width="40" 
+                src={icon} 
+                alt={text} 
+              />
               <div className={style.link__text}>
                 {text}
               </div>
@@ -115,18 +155,39 @@ const BasicNavigation: React.FC<{closeNavigation: () => void, extendNavigation: 
 }
 
 const NavbarContent = ({isActive, toggleNavigation}) => {
+  const navbarContentClasses = `
+    ${style.Navbar__content} 
+    ${style.contentWidth}
+  `
   return (
     <div className={`${style.Navbar__container}`}>
-      <nav className={`${style.Navbar__content} ${style.contentWidth}`}>
-        <MobileHamburger isNavigationActive={isActive} toggleNavigation={toggleNavigation}/>
+      <nav className={navbarContentClasses}>
+        <MobileHamburger 
+          isNavigationActive={isActive} 
+          toggleNavigation={toggleNavigation}
+        />
         <AnimatePresence>
           {!isActive && (
-            <motion.nav variants={NavItemsVariants} initial="initial" animate="animate" exit="initial" className={style.Navbar__links}>
-              {navlinks.map(({to, text, icon}, index) => 
-                <NavbarLink to={to} key={`NavbarContentlink__${index}`}>
-                  <Image height="24" width="24" src={icon} alt={text} />
+            <motion.nav 
+              variants={NavItemsVariants} 
+              initial="initial" 
+              animate="animate" 
+              exit="initial" 
+              className={style.Navbar__links}
+            >
+              {navlinks.map(({to, text, icon}, index) => (
+                <NavbarLink 
+                  to={to} 
+                  key={`NavbarContentlink__${index}`}
+                >
+                  <Image 
+                    height="24" 
+                    width="24" 
+                    src={icon} 
+                    alt={text} 
+                  />
                 </NavbarLink>
-              )}
+              ))}
             </motion.nav>
           )}
         </AnimatePresence>
@@ -150,25 +211,50 @@ const AdditionalItems = ({isActive, additionalButtons}) => {
       router.replace(pathObject, undefined, { shallow: true }) 
     )
   return (
-    <motion.div className={style.additionalItemsGroup} initial="hidden" animate="show" exit="hidden">
-      {isActive ? 
-        <ToggleCircleButton key={`navSettings`} to={{pathname: '/settings'}}>
+    <motion.div 
+      className={style.additionalItemsGroup} 
+      initial="hidden" 
+      animate="show" 
+      exit="hidden"
+    >
+      {isActive ? (
+        <ToggleCircleButton 
+          key={`navSettings`} 
+          to={{pathname: '/settings'}}
+        >
           <CogIconSvg />
         </ToggleCircleButton>
-        : 
+      ) : ( 
         additionalButtons?.map(({to, text, icon, toggle}, index: number) => {
           return (
             toggle ? 
-              <ToggleCircleButton key={`navToggle_${index}`} to={to}>
-                <Image src={icon} height="24" width="24" alt={text}/>
+              <ToggleCircleButton 
+                key={`navToggle_${index}`} 
+                to={to}
+              >
+                <Image 
+                  src={icon} 
+                  height="24" 
+                  width="24" 
+                  alt={text}
+                />
               </ToggleCircleButton>
               :
-              <CircleButton key={`navButton_${index}`} label={text} callback={() => cb(to)}>
-                <Image src={icon} height="24" width="24" alt={text}/>
+              <CircleButton 
+                key={`navButton_${index}`} 
+                label={text} 
+                callback={() => cb(to)}
+              >
+                <Image 
+                  src={icon} 
+                  height="24" 
+                  width="24" 
+                  alt={text}
+                />
               </CircleButton>
           )
         })
-      }
+      )}
     </motion.div>
   )
 }
@@ -183,14 +269,29 @@ const Navbar = ({additionalButtons}) => {
       <div className={style.Navbar__component}>
         <AnimatePresence>
           {isActive &&
-            <motion.div variants={ActiveMenuVariants} initial="initial" animate="animate" exit="initial" transition={{type: "Inertia", duration: 0.3}}>
-              <BasicNavigation closeNavigation={() => setActive(false)} extendNavigation={goHome}/>
+            <motion.div 
+              variants={ActiveMenuVariants} 
+              initial="initial" 
+              animate="animate" 
+              exit="initial" 
+              transition={{type: "Inertia", duration: 0.3}}
+            >
+              <BasicNavigation 
+                closeNavigation={() => setActive(false)} 
+                extendNavigation={goHome}
+              />
             </motion.div>
           }
         </AnimatePresence>
-        <NavbarContent isActive={isActive} toggleNavigation={toggleNavigation}/>
+        <NavbarContent 
+          isActive={isActive} 
+          toggleNavigation={toggleNavigation}
+        />
       </div>
-      <AdditionalItems isActive={isActive} additionalButtons={additionalButtons}/>
+      <AdditionalItems 
+        isActive={isActive} 
+        additionalButtons={additionalButtons}
+      />
     </>
   )
 }
