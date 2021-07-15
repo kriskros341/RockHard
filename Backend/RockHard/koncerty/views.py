@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from django.http import HttpResponse, JsonResponse
 
@@ -12,7 +12,9 @@ class Koncerty(APIView):
     def get(self, request):
         data = KoncertModel.objects.all()
         koncertyData = KoncertSerializer(data, many=True)
-        return JsonResponse(koncertyData.data, safe=False)
+        o = JsonResponse(koncertyData.data, safe=False)
+        print(o)
+        return o
 
     def post(self, request): 
         return JsonResponse({'ho':'ha'})
@@ -24,4 +26,9 @@ class Koncerty(APIView):
         return JsonResponse({'ho':'ha'})
 
 
+class SingePerformance(APIView):
+    def get(self, request, koncert_id):
+        performance = get_object_or_404(KoncertModel, id=koncert_id)
+        serializedPerformance = KoncertSerializer(performance).data
+        return JsonResponse(serializedPerformance)
 

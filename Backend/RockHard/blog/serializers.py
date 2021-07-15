@@ -1,18 +1,18 @@
 from rest_framework import serializers
 from .models import BlogPostModel, BlogTagModel
+from mediaApp.models import ImageModel
 
 
-
-class TagSerializer(serializers.Serializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
-       model = BlogTagModel
-       fields = '__all__'
+        model = BlogTagModel
+        fields = ('id', 'tag_name',)
 
-class ImageSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    image = serializers.ImageField()
-    description = serializers.CharField( max_length=255)
-    
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageModel
+        fields = ('__all__')
 
 
 class BlogPostSerializer(serializers.ModelSerializer):

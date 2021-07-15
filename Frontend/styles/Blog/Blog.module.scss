@@ -77,27 +77,54 @@
 }
 
 
+.TagFont {
+  font-family: Roboto Condensed;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 16px;
+  color: #EEEEEE;
+}
+.TitleFont {
+
+}
+
+
+
 .PostPage__header {
   width: 100%;
   position: relative;
-  margin-bottom: 2rem;
-  .PostPage__title {
-    font-family: Open Sans;
-    font-style: normal;
-    font-size: 20px;
-    line-height: 28px;
-    font-weight: 600;
-    color: #FAFAFA;
+  .PostPage__shortTagList {
+    all: unset;
     position: absolute;
-    bottom: -2rem;
-    width: 100%;
-    box-shadow: 0px -2px 0.5px rgba(0, 0, 0, 0.6); 
-    border-radius: 1rem 1rem 0 0;
-    background: $bg;
-    padding: 1rem 0.5rem;
+    top: 1rem; right: 1rem;
+    .PostPage__tag {
+      list-style: none;
+      text-align: right;
+      margin-bottom: 0.5rem;
+      .PostPage__tagContent {
+        background-color: hsla(0, 0, 16, 1);
+        padding: 0.25rem 0.5rem;
+        display: inline-block;
+        border-radius: 16px;
+        
+
+      }
+    }
   }
 }
 .PostPage__content {
-  padding: 3rem 0.5rem;
-  height: 400vh;
+  padding: 1rem;
+  height: 40vh;
+}
+.PostPage__similar {
+  width: 90%;
+  margin: 0 auto;
+  min-height: 6rem;
+  border-radius: 1rem;
+  background-color: hsla(0, 0, 16%, 100%);
+  margin-bottom: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

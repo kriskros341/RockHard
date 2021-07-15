@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }) {
         <style data-href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' />
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet" />
         <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css' rel='stylesheet' />
+        <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'/>
       </Head>
       <SwitchAnimation
         excludedPaths={['/']}

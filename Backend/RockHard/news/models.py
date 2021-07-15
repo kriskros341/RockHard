@@ -7,11 +7,13 @@ from misc.models import abstract_tag_model, abstract_post_model
 
 
 class TagModel(abstract_tag_model):
+    
     class Meta:
         verbose_name_plural = "Newsy Tagi"
-
+        
 
 class NewsModel(abstract_post_model):
+    
     tags = models.ManyToManyField(TagModel, blank=True)
     
     def __str__(self):

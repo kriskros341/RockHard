@@ -7,6 +7,7 @@ import { CallendarSVG, MapPointSVG } from '../misc'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import TheMap from './Map'
 import globalStyle from '../../styles/app.module.scss'
+import Link from 'next/link'
 
 
 const mapVariants = {
@@ -27,37 +28,36 @@ export const KoncertyMap = ({performanceData, shouldRender}) =>
     }
   </AnimatePresence>
 
-export const Koncert: React.FC<performanceCardInterface> = ({bandName, tourName, place, performanceDate }) => {
+export const Koncert: React.FC<performanceCardInterface> = ({id, bandName, tourName, place, performanceDate }) => {
   const date = new Date(performanceDate).toDateString()
   const articleClasses = `
     ${style.Koncert__component} 
     ${globalStyle.borderAndShadow}
   `
   return (
-    <motion.article 
-      layout 
-      className={articleClasses}
-    >
-      <div className={style.Koncert__container}>
-        <div className={style.Koncert__zespol}>
-          {bandName}
+    <motion.article className={articleClasses}>
+      <Link href={'koncerty/'+id.toString()}>
+        <div className={style.Koncert__container}>
+          <div className={style.Koncert__zespol}>
+            {bandName}
+          </div>
+          <div className={style.Koncert__trasa}>
+            {tourName}
+          </div>
+          <div className={style.Koncert__meta}>
+            <span className={style.decoration}>
+              <CallendarSVG />
+            </span>
+            {date}
+          </div>
+          <div className={style.Koncert__meta}>
+            <span className={style.decoration}>
+              <MapPointSVG />
+            </span>
+            {place.placeName ? place.placeName : "TBA"}
+          </div>
         </div>
-        <div className={style.Koncert__trasa}>
-          {tourName}
-        </div>
-        <div className={style.Koncert__meta}>
-          <span className={style.decoration}>
-            <CallendarSVG />
-          </span>
-          {date}
-        </div>
-        <div className={style.Koncert__meta}>
-          <span className={style.decoration}>
-            <MapPointSVG />
-          </span>
-          {place.placeName ? place.placeName : "TBA"}
-        </div>
-      </div>
+      </Link>
     </motion.article>
   )
 }

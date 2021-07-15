@@ -8,6 +8,7 @@ import { RouterPagination } from '@/Components/Layout/Pagination/Pagination'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
+
 type PostModel = {
   id: number
   title: string
@@ -87,10 +88,12 @@ const Post: React.FC<PostModel> = ({id, title, tags, image, date}) => {
     observerInView, 
     ObserverEntry
   ] = useInView({threshold: 0.8});
+
   return (
+
     <motion.div 
       className={style.Post__component} 
-      ref={observerRef} 
+      ref={observerRef}
     >
       <Link href={`/blog/${id}`}>
         <div className={style.Post__container}>
